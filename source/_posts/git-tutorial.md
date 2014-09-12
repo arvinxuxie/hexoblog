@@ -576,5 +576,210 @@ git stash
 # and delete the stash from the list of stashes
 git stash pop
 ```
+保持`stashes`列表
+```
+# create a stash with uncommitted changes
+git stash save
+#see the list of available stashes
+git stash list
+# result might be something like:
+stash@{0}: WIP on master: 273e4a00 Resize issue in Dialog
+
+# you can use the ID to apply a stash
+git stash apply stash@{0}
+
+# or apply the latest stash and delete it afterwards
+git stash pop
+
+# you can also remove a stashed change without applying it
+git stash drop stash@{0}
+
+# or delete all stashes
+git stash clear
+
+# create a new branch from your stack and switch to it
+git stash branch newbranchforstash
+```
+
+删除没有被追踪到的文件`untracked files`
+```
+# create a new file with content
+echo “this is trash to be deleted” > test04
+
+# make a dry-run to see what would happen
+# -n is the same as --dry-run
+git clean -n
+
+# delete, -f is required if variable clean. requiredForce is not set to false
+git clean -f
+
+# use -d flag to delete new directories
+# use -x to delete hidden files, e.g. “.example”
+git clean -fdx
+```
+
+## 回退提交
+```
+# delete a file
+rm test01
+
+# revert the deletion
+git checkout --test01
+
+# note git checkout test01 also works but using
+# two - ensures that Git understands that test01
+# is a path and not a parameter
+
+# change a file
+echo “override” > test01
+
+# restore the file 
+git checkout -- test01
+
+# you can restore a directory called data with the following command.
+git checkout -- data
+```
+
+选取暂存区的改变
+```
+# assuming you deleted a tracked directory and staged the changes
+# restore the working tree and reset the staging area
+git checkout HEAD -- your_dir_to_retore
+```
+
+删除被暂存的改变
+```
+# create a file and accidently add it to the staging area
+touch incorrect.txt
+git add .
+
+# remove it from the staging area
+git reset incorrect.txt
+
+# to clean up, delete the file 
+rm incorrect.txt
+```
+
+删除暂存区的改变在提交之前
+```
+# some nonsense change
+echo “change which should be removed later” > test01
+git add test01
+
+# restore the file in the staging area
+git reset HEAD test01
+
+# get the version from the staging area into the working tree
+git checkout test01
+cat test01
+#a change
+```
+
+## 移动HEAD指针
+1. `--soft`: `git reset` moves only the HEAD pointer
+2. `--mixed`: moves the HEAD pointer 并且重置暂存区一个新的HEAD
+3. `--hard`: moves the HEAD pointer and resets the staging area and the working tree to the new HEAD
+| Reset          | HEAD   | Working tree   | Staging area    |
+| ------         | ------ | -------------- | --------------- |
+| soft           | yes    | no             | no              |
+| mixed(default) | yes    | no             | yes             |
+| hard           | yes    | yes            | yes             |
+
+![Git Reset]({{BASE_PATH}}/image/git-tutorial/img3.jpg)
+
+```
+# removes staged and working tree changes or committed files
+git reset --hard
+```
+
+**压缩提交`squash commits`**
+因为软重置不会删除你的在文件中的改变以及索引`index`，你可以用`git reset --soft`命令压缩几个提交成为一个提交
+```
+# squashes the last two commits
+git reset --soft HEAD~1 && git commit -m “new commit message”
+```
+
+**在历史中回退文件**
+`git show`命令允许查看和回退文件从分支、提交及标签中。能够查看这些文件的状态不用在你的分支、提交及标签剪出到工作树中。
+```
+# [reference] can be a branch, tag, HEAD or commit ID
+# [filename] is the filename including path
+git show [reference]:[filename]
+
+# to make a copy copiedfile.txt
+git show [reference]:[filename] > copiedfile.txt
+```
+在仓库里恢复删除的文件
+```
+# see history of file
+git log -- <file_path>
+
+# checkout file based on predecessors the last commit which affect it
+# this was the commit which delete the file
+git checkout [commit]^ -- <file_path>
+```
+查看那一次提交删除了文件
+```
+# see the changes of a file, works even
+# if the file was deleted
+git log -- [file path]
+
+# limit the output of Git log to the last commit,i.e. the commit which delete the file
+# -1 to see only the last commit use 2 to see the last 2 commits etc
+git log -1 -- [file path]
+
+# include stat parameter to see some statics, e.g. how many files were deleted
+git log -1 --stat--[file path]
+```
+
+**剪出或回退提交**(Checkout or revert commits)
+你可以检出老版本通过commit ID。
+```
+# displays the commit history of the repository
+# which contains the commit ID, author, message etc
+git log
+
+# checkout the older revision 
+git checkout [commit_id]
+
+# base on the example output this could be
+git checkout 46474a52e0ba1f1435ad285eae0d8ef19d529bf
+
+# revert a commit 
+git revert commit_id
+```
+Git reflog命令给了一个完整的`HEAD pointer`改变的历史
+```
+git reflog
+```
+
+远程和本地追踪分支
+```
+# list all remote branches
+git branch -r
+
+# delete remote branch from origin
+git branch -d -r origin/[remote_branch]
+
+# delete branch in a remote repository
+git push [remote] :branch
+
+# delete branch in a remote repository
+git push [remote] --delete :[branch]
+# example
+git push origin : testbranch
+
+#Note you can also specify the remote repository’s URL
+git push ssh://[URL_to_repo] :testbranch
+```
+
+
+
+
+
+
+
+
+
 
 
