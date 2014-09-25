@@ -42,7 +42,7 @@ Git允许用户本地仓库和远程仓库的同步(synchronize)。用户可以�
 10. **工作树/区**(Working tree)
 工作树包含仓库工作文件的集合，你可以改变内容并作为新的提交到仓库中。
 
-![工作区，暂存区和版本库的关系]({{BASE_PATH}}/image/git-tutorial/imag2.jpg)
+![工作区，暂存区和版本库的关系]({{BASE_PATH}}/image/git-tutorial/img2.jpg)
 
 **文件状态**
 一个文件在Git仓库中的工作树中可以有以下状态。
@@ -679,6 +679,7 @@ cat test01
 1. `--soft`: `git reset` moves only the HEAD pointer
 2. `--mixed`: moves the HEAD pointer 并且重置暂存区一个新的HEAD
 3. `--hard`: moves the HEAD pointer and resets the staging area and the working tree to the new HEAD
+
 | Reset          | HEAD   | Working tree   | Staging area    |
 | ------         | ------ | -------------- | --------------- |
 | soft           | yes    | no             | no              |
@@ -772,6 +773,13 @@ git push origin : testbranch
 #Note you can also specify the remote repository’s URL
 git push ssh://[URL_to_repo] :testbranch
 ```
+追踪分支(Tracking branches)
+```
+# setup a tracking branch called newbranch
+# which tracks origin/newbranch
+git checkout -b newbranch origin/newbranch
+```
+
 
 
 

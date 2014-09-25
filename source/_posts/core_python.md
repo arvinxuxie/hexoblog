@@ -7,39 +7,52 @@ mathjax: true
 ---
 # python基础
 ## 起步
+<!--more-->
+### Python 解释器
+`CPython`: 由C语言开发，并广泛使用，运行`python`命令启动
+`IPython`: 是基于CPython之上的一个交互式解释器。
+`PyPy`: 是另一个Python解释器，它的目标是执行速度，采用`JIT`技术，对Python进行动态编译，但和[Cpython运行结果有所不同](http://pypy.readthedocs.org/en/latest/cpython_differences.html)。
+`Jypthon`: 是运行在Java平台上的python解释器，可以直接把Python代码编译成Java字节码执行。
+`IronPython`: 是运行在`.Net`平台上的Python解释器，可以直接把Python代码编译成.Net的字节码。
+
+Note： 如果和Java或.Net平台交互，最好的办法不是用`Jypthon`或是`Ironpython`,而是通过网络调用来交互，确保各程序之间的独立。
 ### 输入输出
 交互式编程变量输出
 在解释器中(`_`)代表最后计算的表达式。
 ```python
->>> myString = ‘Hello World’
+>>> myString = 'Hello World'
 >>> print mystring
     Hello World
 >>> _
    Hello World
+
+# print遇到逗号','会输出一个空格
+>>> print 'The quick brown', 'jumps over', 'the lazy dog'
+The quick brown jumps over the lazy dog
 ```
 `>>`被用于重定向输出
 下面将输出重定向到标准错误输出
 ```python
 import sys
-print >> sys.stderr, ‘Fatal error: invalid input!’
+print >> sys.stderr, 'Fatal error: invalid input!'
 ```
 将输出重定向到文件中
 ```python
-logfile = open(‘/tmp/mylog.txt’, ‘a’);
-print >> logfile, ‘Fatal error: invalid input!’
+logfile = open('/tmp/mylog.txt', 'a');
+print >> logfile, 'Fatal error: invalid input!'
 logfile.close()
 ```
 ### 注释
 同在Unix-shell语言中用**#**作为注释
 ```python
 >>> #one comment
-    print ‘Hello World’ # another comment
+    print 'Hello World' # another comment
     Hello World!
 ```
 `doc strings`文档型注释，用来加在模块、类、函数的开始
 ```python
 def foo():
-    “This is a doc string.”
+    "This is a doc string."
     return True
 ```
 不同于常规的注释`doc strings`可以在程序运行时被访问，也可用来自动生成文档
@@ -52,15 +65,15 @@ python支持5种基本的数值类型
   * bool (Boolean values)
 * float (floating point real numbers)
 * complex(complex numbers)
-“Multuple” Assignment(多元赋值)
+"Multuple" Assignment(多元赋值)
 ```python
->>> x, y, z = 1, 2, ‘a string’
+>>> x, y, z = 1, 2, 'a string'
 >>> x
 1
 >>> y
 2
 >>> z
-‘a string’
+'a string'
 ```
 交换变量，可以不用临时变量
 ```python
@@ -77,25 +90,25 @@ python支持5种基本的数值类型
 1
 ```
 
-字符串类型可以用`’’’`三个引号去消除特殊字符的转意，还支持**[:]**的分片
+字符串类型可以用`'''`三个引号去消除特殊字符的转意，还支持**[:]**的分片
 ```python
->>> pytstr = ‘Python’
+>>> pytstr = 'Python'
 >>> pystr[0]
-‘P’
+'P'
 >>> pystr[2:5]
-‘tho’
->>> pystr = ‘’’python
-    is cool’’’
+'tho'
+>>> pystr = '''python
+    is cool'''
 >>> pystr
-‘python\nis cool’
+'python\nis cool'
 >>> print pytstr
 python
 is cool
 ```
 专用下划线标志符
-_ \_xxx 不能被导入 `from module import *`
-_ \_\_xxx\_\_ 系统定义的名称
-_ \_\_xxx 类中私有成员的名称
+* \_xxx 不能被导入 `from module import *`
+* \_\_xxx\_\_ 系统定义的名称
+* \_\_xxx 类中私有成员的名称
 
 
 ### 实用的函数
@@ -105,7 +118,7 @@ _ \_\_xxx 类中私有成员的名称
 | help([obj])                  | 显示**对象**文档的方法属性                                                              |
 | int(obj)                     | 将对象转化成整型                                                                        |
 | len(obj)                     | 返回对象的长度                                                                          |
-| open(fn, mode)               | 以**mode**模式打开**fn**(‘r’ = read, ‘w’ = wirte)                                       |
+| open(fn, mode)               | 以**mode**模式打开**fn**('r' = read, 'w' = wirte)                                       |
 | range([[start,]stop[,step]]) | 返回一个以`start`开始(默认是0)，以`stop`结束(左闭右开)的步长为`step`(默认是1)的整型数列 |
 | str(obj)                     | 将`object`转化成字符串                                                                  |
 | type(obj)                    | 返回对象的类型                                                                          |
@@ -117,11 +130,11 @@ _ \_\_xxx 类中私有成员的名称
 4. varialbe declarations
 5. class declarations
 6. function declarations
-7. “main” body
+7. "main" body
 ```python
 #!/usr/bin/env python
 #-*- coding: utf-8 -*- #startup line
-“this is a test module”    #Module documentation
+"this is a test module"    #Module documentation
 
 import sys    #Module imports
 import os
@@ -129,15 +142,15 @@ import os
 debug = True    #(Global) Variable declarations
 
 class FooClass (object):    #Class declarations
-    “Foo class”
+    "Foo class"
     pass
 
 def test():               #Function declarations
-    “test function”
+    "test function"
     if debug:
-        print ‘ran test()’
+        print 'ran test()'
 
-if __name__ == ‘__main__’:    #”main” body
+if __name__ == '__main__':    #"main" body
     test()
 ```
 * 如果是被导入则`__name__`为被导入名称
@@ -162,7 +175,7 @@ foobar(x)
 ```
 * 当变量被赋值给另一个对象时，原对象的引用计数自动减1
 ```python
-foo = ‘xyz’
+foo = 'xyz'
 bar = foo
 foo = 123
 ```
@@ -173,7 +186,7 @@ del obj1[, obj2[,...objN]]
 执行`del y`会产生两个结果
 1. 从现在的名字空间中删除y
 2. x的引用计数减一
-注意，执行`del x`删除该对象最后一个引用时，即该对象的引用计数减为0,会导致该对象“无法访问”。该对象成为垃圾回收机制的对象。但任何追踪或调试程序会给一个对象增加一个额外的引用，这会推迟回收时间
+注意，执行`del x`删除该对象最后一个引用时，即该对象的引用计数减为0,会导致该对象"无法访问"。该对象成为垃圾回收机制的对象。但任何追踪或调试程序会给一个对象增加一个额外的引用，这会推迟回收时间
 
 **总结对象的引用减少的情况**
 1. 局部引用超出其作用域。像`foobar()`执行完后的局域引用变量
@@ -219,12 +232,12 @@ value: 对象表示的数据项。
 对象类型
 ```python
 >>> type(42)
-<type ‘int’>
+<type 'int'>
 ```
 让我们仔细看一下，它的返回类型。
 ```python
 >>> type(type(42))
-<type ‘type’>
+<type 'type'>
 ```
 `None`是pyton的Null对象
 python有一个特别的类型就是`Null object`空对象或是`None Type`空类型。它没有任何操作`None`类型和C语言中的`void`相似，`None`的值和C语言中的`NULL`相似。
@@ -238,7 +251,7 @@ python有一个特别的类型就是`Null object`空对象或是`None Type`空�
   * 0.0 (float)
   * 0L(long integer)
   * 0.0 + 0.0j(complex)
-* “” (empty string)
+* "" (empty string)
 * []\(empty list\)
 * () (empty tuple)
 * {} (empty dictionary)
@@ -254,14 +267,14 @@ python有一个特别的类型就是`Null object`空对象或是`None Type`空�
 `切片对象(Slice Objects)`: 当使用python扩展的切片语法时就会创建切片对象。扩展的切片语法允许对不同的索引切片操作，包括步长切片(stride indexing)，多维切片(multi-dimensional indexing), 省略切片(Ellipsis type indexing)。多维切片：`sequence[start1: end1, start2: end2]`.省略切片：`sequence[..., start1: end1]`。切片对象也可以通过调用`slice()`**BIF**产生。
 步长切片需要第三个参数步长：`sequeuece[starting_index: ending_index: stride]`。
 ```python
->>> foostr = ‘abcde’
+>>> foostr = 'abcde'
 >>> foostr[::-1]
-‘edcba’
+'edcba'
 >>> foostr[::-2]
-‘eca’
->>> foolist = [123, ‘xba’, 342.23, ‘abc’]
+'eca'
+>>> foolist = [123, 'xba', 342.23, 'abc']
 >>> foolist[::-1]
-[‘abc’, 342.23, ‘xba’, 123]
+['abc', 342.23, 'xba', 123]
 ```
 
 **`省略对象(Ellipsis Objects)`**: 省略对象用于扩展切片语法中，起记号作用。这个对象用于切片语法用(...)表示。类似Null对象的`None`，省略对象有唯一的名字`Ellipsis`它的布尔值始终是`True`。
@@ -319,47 +332,47 @@ Python仅缓存简单的整数，因为他认为这些小数会在程序中经�
 
 **标准内建函数**
 
-* `type()`：python2.2之后它变成一个“工厂函数(factory function)”，我们还可以将它当作一个**BIF**来使用。它得到对象的类型，并返回相应的`type`对象。
+* `type()`：python2.2之后它变成一个"工厂函数(factory function)"，我们还可以将它当作一个**BIF**来使用。它得到对象的类型，并返回相应的`type`对象。
 * `cmp()`: 用于比较两个对象，如果两个对象不是标准类型`standard type`而是用户自建对象`user-created class`，`cmp()`会调用该类的特殊方法`__cmp__()`。
 ```python
->>> a, b = ‘abc’, ‘xyz’
+>>> a, b = 'abc', 'xyz'
 >>> cmp(a, b)
 -1
 >>>cmp(b, a)
 1
->>> b = ‘abc’
+>>> b = 'abc'
 >>> cmp(a, b)
 0
 ```
 * `str()` 和 `repr()` (及\`\` 运算符)：其中`repr()`和\`\`相同但后者不鼓励使用，它们返回的是一个对象的**官方**`official`的字符串表示，(大多数情况)能够被求值表达式`eval()`**BIF**重新得到该对象。但`str()`致力于生成可读性好的字符串表示，返回结果无法用`eval()`求值，适合用`print`输出。
 ```python
->>> a = ‘abc’
+>>> a = 'abc'
 >>> str(a)
-‘abc’
+'abc'
 >>> repr(a)
-“‘abc’”
+"'abc'"
 >>> b = eval(repr(a))
 >>> b
-‘abc’
+'abc'
 ```
 * `type()` 和 `isinstance()`: python不支持函数方法重载，所以你自己检查`instrospection`对象是正确的。我们可以用`type`来帮助我们。
 ```python
->>> type(‘’)
-<type ‘str’>
+>>> type('')
+<type 'str'>
 >>> class Foo: pass
 ...
 >>> foo = Foo()
 >>> type(Foo)
-<type ‘classobj’>
+<type 'classobj'>
 >>> type(foo)
-<type ‘instance’>
+<type 'instance'>
 >>> class Bar(object): pass
 ...
 >>> bar = Bar()
 >>> type(Foo)
-<type ‘classobj’>
+<type 'classobj'>
 >>> type(bar)
-<class ‘__main__.Bar’>
+<class '__main__.Bar'>
 ```
 下面看一下`isinstance()`的用法
 ```python
@@ -367,16 +380,16 @@ Python仅缓存简单的整数，因为他认为这些小数会在程序中经�
 # -*- coding: utf-8 -*-
 
 def displayNumType(num):
-    print num, ‘is’,
+    print num, 'is',
     if isinstance(num, (int, long, float, complex)):
-        print ‘a number of type: ’, type(num).__name__
+        print 'a number of type: ', type(num).__name__
     else:
-        print ‘not a number at all!’
+        print 'not a number at all!'
 displaynumtype(-69)
 displaynumtype(9999999999999999999999999999999999999L)
 displaynumtype(98.6)
 displaynumtype(-5.2+1.9j)
-displaynumtype(‘xxx’)
+displaynumtype('xxx')
 
 python typechk.py
 -69 is a number of type: int
@@ -405,12 +418,12 @@ xxx is a number at all!
 
 **标准类型的分类**
 
-* “Basic(基本)”: 是那些python提供的标准或是核心类型
-* “Built-in(内建)”: 这些类型是python默认提供的
-* “Data(数据)”: 它们用于一般数据的存储
-* “Object(对象)”： 对象类型是对数据和功能默认的抽象
-* “Primitive(原始)”: 它们提供最底层粒度的数据存储(lowest-level granularity of data storage)
-* “Types”: 他们就是数据类型
+* "Basic(基本)": 是那些python提供的标准或是核心类型
+* "Built-in(内建)": 这些类型是python默认提供的
+* "Data(数据)": 它们用于一般数据的存储
+* "Object(对象)"： 对象类型是对数据和功能默认的抽象
+* "Primitive(原始)": 它们提供最底层粒度的数据存储(lowest-level granularity of data storage)
+* "Types": 他们就是数据类型
 
 `存储模型(Storage Model)`: 第一种分类方法是看这种类型的对象能存储多少对象。python的类型像其他语言一样能保存单个或多个值。一种类型能保存单个文字对象`literal object`,我们称之为原子`atomic`或标量`scalar`存储。那些能保存多个对象称之为容器存储`container storage`(Container Object容器对象有时在其他文档中成为复合对象`composite or compound ojects`,但是这些这些不仅仅指类型还包括对象实例`class instances`)。容器类型有一个问题是不同类型对象的存储，python中可以存储不同类型的对象。
 
@@ -424,10 +437,10 @@ Container(容器类型)             Lists, tuples, dictionaries
 不可变的`Immutable`          Numbers, strings, tuples
 通过下面示例来说明对象的变化
 ```python
->>> x = ‘Python numbers and strings’
+>>> x = 'Python numbers and strings'
 >>> print id(x)
 16191392
->>> x = ‘are immutable What gives？’
+>>> x = 'are immutable What gives？'
 >>> print id(x)
 16191122
 >>> i = 0
@@ -436,14 +449,14 @@ Container(容器类型)             Lists, tuples, dictionaries
 >>> i = i + 1
 >>> print id(i)
 3349600
->>> alist = [‘ammonia’, 83, 85, ‘lady’]
+>>> alist = ['ammonia', 83, 85, 'lady']
 >>> print id(alist)
 135443480
 >>> alist[2] = alist[2] + 1
->>> alist[3] = ‘stereo’
+>>> alist[3] = 'stereo'
 >>> print id(alist)
 135443480
->>> alist.append(‘gaudy’)
+>>> alist.append('gaudy')
 >>> alist.append(alist[2] + 1)
 >>> print id(alist)
 135443480
@@ -529,13 +542,13 @@ python未来可能标准化的除法行为
 仅用于整型函数
 ```
 >>> hex(255)
-‘0xff’
+'0xff'
 >>> oct(255)
-‘0377’
->>> ord(‘a’)
+'0377'
+>>> ord('a')
 97
 >>> chr(97)
-‘a’
+'a'
 ```
 
 相关模块
@@ -552,217 +565,130 @@ python未来可能标准化的除法行为
 `choice()`: 随机返回给定序列中的一个元素。
 
 
-### 序列：字符串，列表，元组
-切片操作(Slice[], [:], [::])
-```python
->>> s = ‘abcdefgh’
->>> s[::-1]
-‘hgfedcba’
->>> s[::2]
-‘aceg’
+
+
+## 文件
+**文件内建函数**(open()和file())
+文件对象的访问模式
+`r`     只读方式打开
+`rU/ Ua`    以读方式打开，同时提供换行符的支持
+`w`     以写方式打开
+`a`     以追加方式打开
+`r+`     以读写方式打开
+`w+`     以读写方式打开
+`a+`     以读写方式打开
+`rb`     以二进制读方式打开
+`wb`     以二进制写方式打开
+`ab`     以二进制追加方式打开
+`rb+`     以二进制读方式打开
+`wb+`     以二进制写方式打开
+`ab+`     以二进制追加方式打开
+
+`open()`和`file()`函数功能相同，可以任意替换，一般建议使用`open()`来读写文件，在你想说明在处理文件对象时使用`file()`,例如`if instance(f, file)`
+
+通用换行符支持(UNS):不同平台下行结束符是不一样的，当你使用'U'标志打开文件的时候，所有行分割符通过Python的输入方法(例如`read*()`)返回时都被替换成NEWLINE字符(\n)。如果文件刚被打开，程序还没遇到行结束符，那么文件的`newlines`为`None`。
+在编译Python的时候UNS默认是打开的，可以使用`--without-universal-newlines`开关关闭它，自己处理行结束符。
+
+**输入**
+`read()`方法用来直接读取字节到字符串中，最多读取给定数目个字节。如果没有给定size参数(默认值是-1)，文件将被读取到末尾。
+`readline()`方法读取打开文件的一行(读取下一个行结束符之前的所有字节)。和`read()`相同，也有一个可选的size参数，默认是-1。
+`readlines()`方法会读取所有的(剩余的)行然后把他们作为一个字符串列表返回。可选参数`sizhint`代表返回自大字节大小。如果它大于0,返回的所有行应该大约有`sizhint`字节(可能稍微大于这个数字，因为需要凑齐缓冲区大小)
+
+**输出**
+`write()`方法与`read()`和`readline()`相反。他把含有文本数据或二进制数据块的字符串写入到文件中去。
+`writelines()`接受一个字符串列表作为参数，将他们写入文件，行结束符不会自动加上。
+注意没有writeline()方法，因为它等价于使用行字符串调用`write()`方法。
+
+**文件内移动**
+`seek()`方法可以在文件中移动文件指针指到不同的位置。`offset`字节代表相对于某个位置偏移量。位置默认是0,代表从文件开头算起(及绝对偏移量)，1代表从当前位置算起，2代表从文件末尾算起。
+`text()`方法对`seek()`的补充，它告诉你当前文件指针在文件中的位置-从文件开始算起，单位为字节。
+
+**文件迭代**(File Iteration)
+`for eacLien in f:`:文件迭代更为高效。
+
+**其它**
+`close()`: 通过关闭文件来结束对他的访问，Python垃圾收集机制也会在文件对象的引用计数降至零的时候自动关闭文件。这在文件只有一个引用时发生，良好的编程习惯要求在重新赋另一个文件对象前关闭这个文件。如果你不显示的关闭文件，那么可能丢失输出缓冲区的数据。
+`fileno()`: 返回打开文件的描述符，这是一个整数，可以用在os模块(os.read())的一些底层操作上。
+`flush()`: 会直接把内部缓冲区中的数据立刻写入文件。
+`isatty()`: 当文件是一个类tty(tty-like)设备返回true，否则返回false
+`truncate()`: 将文件截取到当前文件指针位置或者到给定size，以字节为单位
+`tell()`:  返回当前文件指针位置
+
+**有助于跨平台开发的os模块属性**
+`linesep`:    用于文件中分隔行的字符串
+`sep`：       用来分隔文件路径名的字符串
+`pathseq`:    用于分隔文件路径的字符串
+`curdir`:     当前工作目录的字符串名称
+`pardir`:     (当前工作目录的)父目录字符串名称
+不管使用什么平台，只要导入os模块，这些变量会自动设置为正确的指。
+这是linux下的输入
 ```
-切片返回尾部递减字符串
-```python
-s = ‘abcde’
-for i in [None] + range(-1, -len(s), -1):
-    print s[:i]
-
-abcde
-abcd
-abc
-ab
-a
+In [29]: import os
+In [30]: os.linesep
+Out[30]: '\n'
+In [31]: os.sep
+Out[31]: '/'
+In [32]: os.pathsep
+Out[32]: ':'
+In [33]: os.curdir
+Out[33]: '.'
+In [34]: os.pardir
+Out[34]: '..'
 ```
-序列类型转换工厂函数
-`list(iter)`: 把`iter`转换成list
-`str(obj)`: 把`obj`转换成string(以字符串形式打印出来)
-`tuple`: 把`iter`转换成tuple
 
-字符串string
-```python
->>> import string
->>> string.uppercase
-‘ABCDEGHIJKLMNOPQRSTUVWXWZ’
->>> string.lowercase
-‘abcdeghijklmnopqrstuvwxwz’
->>> string.letters
-‘abcdeghijklmnopqrstuvwxwzABCDEFGHIJKLMNOPQRSTUVWXYZ’
->>> string.digits
-‘0123456789’
+**实例**
 ```
-ID Check(idcheck.py)
-```python
-#!usr/bin/env python
-import string
-
-alphas = string.letters + ‘_’
-nums = string.digits
-
-myInput = raw_input(‘Identifier to test?’)
-
-if len(myInput) > 1:
-    if myInput[0] not in alphas:
-        print ‘Invalid: first symbol must be alphabetic’
+filename = raw_input('Enter file name:')
+fobj = open(filename, 'w')
+while True:
+    aLine = raw_input("Enter a line('.') to quit: ")
+    if aLine != '.':
+        fobj.write("%s%s" % (aLine, os.linesep))
     else:
-        for otherChar in myInput[1:]:
-            if otherChar not in alphas + nums:
-                print ‘invalid : remaining symbols must be alphanumeric’
-                break
-        else:
-            print “okey as an identifier”
+        break
+fobj.close()
 
+#使用seek()方法在文件内部移动，使用tell()方法展示我们移动的过程
+In [2]: f = open('test.txt', 'w+')
+In [3]: f.tell()
+Out[3]: 0
+In [4]: f.write
+In [4]: f.write('test line 1\n')
+In [5]: f.tell()
+Out[5]: 12
+In [6]: f.write('test line 2\n')
+In [7]: f.tell()
+Out[7]: 24
+In [8]: f.seek(-12, 1)
+In [9]: f.tell()
+Out[9]: 12
+In [10]: f.readline()
+Out[10]: 'test line 2\n'
+In [11]: f.seek(0, 0)
+In [12]: f.readline()
+Out[12]: 'test line 1\n'
+In [13]: f.tell()
+Out[13]: 12
+In [14]: f.readline()
+Out[14]: 'test line 2\n'
+In [15]: f.tell()
+Out[15]: 24
+In [16]: f.close()
 ```
 
-**只适用于字符串的操作符**
-字符串格式化符号
-`%c`      转换成字符(ASCII码值，或长度为一的字符串)
-`%r`      优先`repr()`函数进行字符串转换
-`%s`      优先`str()`函数进行字符串转换
-`%d / %i` 转换成有符号十进制数
-`%u`      转换成无符号十进制数
-`%o`      转换成无符号八进制数
-`%x/%X`   (Unsigned)转成无符号十六进制数(x/X代表转换后的十六进制字符的大小写)
-`%e/%E`   转成科学计数法(e/E控制输出e/E)
-`%f%F`    转换成浮点数(小数部分自然截断)
-`%g/%G`   %e和%f/    %E和%F的简写
-`%%`      输出%
-格式化操作符辅助指令
-`*`       定义宽度或者小数精度
-`-`       左对齐
-`+`       正数前面显示(+)
-`<sp>`    正数前面显示空格
-`#`       在八进制数前显示(‘0’),在十六进制前显示‘0x’或‘0X’(取决用的是‘x’还是‘X’)
-`0`       显示的数字前面填充‘0’
-`(var)`   映射变量(字典参数)
-`m.n`     m显示最小总宽度，n小数后面的位数
+**文件内建属性**
+`file.closed` :  True表示文件已经关闭，否则为false
+`file.encoding`:   文件所使用的编码-当Unicode字符串被写入数据时，它们自动使file.encoding转化为字节字符串;若file.encoding为None时使用系统默认编码。
+`file.mode`    文件打开时使用的访问模式
+`file.newlines`    未读取到行分隔符时为None，只有一种行分隔符时作为一个字符串，当文件有多种类型的行结束符时，则作为一个包含所有当前所遇到的行结束符的列表
+`file.softspace`     为0表示在输出一数据后，要加上一个空格符，1表示不加。这个属一般程序员用不着，由程序内部使用。
 
-```
->>> “%x” % 108
-‘6c’
->>> “%X” % 108
-‘6C’
->>> “%#X” % 108
-‘0X6C’
->>> “%#x” % 108
-‘0x6c’
+**标准文件**
+一般来说当程序一启动这三个标准文件便可以被访问到，这三个标准文件是标准输入`standard input`(通常是键盘)，标准输出`standard output`(到屏幕的缓冲输出buffered output to the monitor or display)，标准错误`standard error`(到屏幕的非缓冲区输出unbuffered output to the screen)。这里的"缓冲区"和"非缓冲区"(buffered and unbuffered)是指open()函数的第三个参数。这些文件沿用C语言中的命名规则，
 
->>> ‘%.2f’ % 1234.567890
-‘1234.57’
->>> ‘%E’ % 1234.567890
-‘1.2345678E+03’
->>> ‘%e’ % 1234.567890
-‘1.2345678e+03’
 
->>> “%+d” % 4
-‘+4’
->>> “%+d” % -4
-‘-4’
->>> “We are at %d%%” % 100
-‘We are at 100%’
->>> ‘Host: %s\tPort: %d’ % (‘mars’, 80)
-‘Host: mars    Port: 80’
->>> num = 123
->>> ‘dec: %d/oct: %#o/hex: %#X’ % (num, num, num)
-‘dec: 123/oct: 0173/hex: 0X7B’
 
->>> ‘There are %(howmany)d %(lang)s Quotation Symbols’ % {‘lang’: ‘Python’, ‘howmany’: 3}
-‘There are 3 Python Quotation Symbols’
-```
 
-字符串模板`String Templates: Simpler Substitution`
-```python
->>> from string import Template
->>> s = Template(‘There are ${howmany} ${lang} Quotation Symbols’)
->>> print s.substitute(lang=’Python’, howmany=3)
-There are 3 Python Qutation Symbols
->>> print s.substitute(lang=’Python’)
-Traceback(most recent call last):
 
->>> print s.safe_substitute(lang=’Python’)
-There are ${howmany} Python Quotation Symbols
-```
 
-内建函数
-```python
->>> str1 = ‘abc’
->>> str2 = ‘lmn’
->>> cmp(str1, str2)
--1
->>> len(str1)
-3
->>> max(str1)
-c
->>> min(‘ab12cd’)
-‘1’
-
->>> s = ‘foo’
->>> for i, t in enumerate(s)
-       print i, t
-0 f
-1 o
-2 o
-
->>> s, t = ‘foat’, ‘obr’
->>> zip(s, t)
-[(‘f’, ‘o’), (‘o’, ‘b’), (‘a’, ‘r’)]
-
-```
-
-字符串内建方法: String Built-in Methods
-`string.capitalize()`:    把字符串的第一个字符大写
-`string.center(width)`:   返回一个原字符串居中，空格填充。
-`string.count(str, beg=0, end=len(string))`: 返回str在string里面出现的次数，beg和end指定范围
-`string.decode(encoding=’UTF-8’, errors=’strict’)`:   以`encoding`指定的编码风格解码string，如果出错默认报`ValueError`异常，除非`errors`指定的是‘ignore’或者‘replace’
-`string.endswith(obj,beg=0,end=len(string))`:   检查字符串在beg和end范围是否以`obj`结束，obj通常是字符串，如是元组，则判断string是否在元组中
-`string.expandtabs(tabsize=8)`:   把字符串string中`tab`符转换为空格，默认是8
-`string.find(str, beg=0, end=len(string))`: 检测str在beg和end范围是否包含在string中，是返回索引否则返回-1
-`string.rfind(str, beg=0, end=len(string))`: 类似find(),从右边开始查找
-`string.index(str, beg=0, end=len(string))`: 用法同find()，但str不再string中会报异常
-`string.rindex(str)`: 同index(),从右边开始
-`string.isalnum()`: string至少有一个字符，且所包含字符都是字母或数字返回true
-`string.isalpha()`: string至少有一字符，且所包含字符都是字母返回true
-`string.isdecimal()`: string只包含十进制数返回true
-`string.isdigit()`: string只包含数字返回true
-`string.islower()`: string至少含有一个区分大小写字符，且所有这些字符都是小写返回true
-`string.lower()`: 将string字符转化成小写
-`string.isupper()`: 与`string.islowe()`相反
-`string.upper()`: 将string转换成大写
-`string.isnumeric()`: string中只包含数字字符返回true
-`string.isspace()`: string中只包含空格返回true
-`string.title()`: 返回标题化的stirng，即所有单词以大写开始，其余字母均小写
-`string.istitle()`: string是标题化的返回true
-`string.join(seq)`: 以string作为分隔符将`seq`中所有元素合并成新字符串
-`string.ljust(width)`: 返回原字符串左对齐用空格填充至长度为`width`
-`stirng.rjust(width)`: 用法同ljust()
-`string.lstrip()`: 截掉string左边的空格
-`string.rstrip()`: 截掉string右边的空格
-`string.strip()`: 在string上执行lstrip()和rstrip()，文本末换行符也可去掉
-`string.partition(str)`: 把string分成一个3元组(stringPreStr, str, stringPostStr),如果string没有str则stringPreStr = string
-`string.rpartition(str)`: 用法同partition()
-`string.split(str=””, num=string.count(str))`: 以str为分割符切片，如果num有值则分割num个子字符串
-`string.splitlines(num=string.count(‘\n’))`: 按行分隔，num制定切片个数
-`string.startswidth(obj, beg=0, end=len(string))`: 检查字母是否在beg和end范围以`obj`开头，是返回true。
-`string.translate(str, del=””)`: 根据`str`给出的表转换string的字符过滤掉del中的字符
-`string.zfill(width)`: 返回长度为`width`的字符串，右对齐前面填充0
-```pyhton
->>> quest = ‘what is your favorite color?’
->>> quest.capitalize()
-‘What is your favorite color?’
->>> quest.center(40)
-‘what is your favorite color?    ’
->>> quest.count(‘or’)
-2
->>> quest.endwith(‘color?’)
-True
->>> find(‘or’, 20, 30)
-25
->>> quest.index(‘or’, 10)
-16
->>> ‘:’.join(quest.split())
-‘what:is:your:favorite:color?’
->>> quest.replace(‘favorite color’,’quest’)
-‘what is your quest?’
-```
-#### Unicode
-Unicode是计算机可以支持这个星球上多种语言的秘密武器，codec是COder/DECoder首字母组合，他定义了文本跟二进制值的转换方式，跟ASCII那种用一个字节把字符转换成数字的方式不同，Unicode用的是多字节，导致Unicode支持多种不同的编码方式。比如code支持ASCII，ISO8859-1/Latin-1,UTF-8和UTF-16
 
