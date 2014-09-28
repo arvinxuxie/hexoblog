@@ -32,6 +32,7 @@ python同样允许程序员执行一个没有显式定义参数的函数，相�
 该语法中所有的参数都是可选的---从参数传递到函数的过程来看，在单独的函数调用时，每个参数都是独立的。这可以有效的取代apply()内建函数。
 ```python
 Randomly chooses numbers and an arithmetic function, displays the question and verifies the results. shows answer after three wrong tries and does not continue until the user enter the correct answer.
+
 #!/usr/bin/env python
 from operator import add, sub
 from random import randint, choice
