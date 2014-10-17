@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Debugging and Profiling
-categorites: python
+category: python
 tags: python
 ---
 这些库帮助你进行python的开发，调试器`debugger`能够逐步执行代码，分析栈帧设置断点等，这些剖析器能够跑你的代码给你详尽的错误信息，帮你确认程序的瓶颈。

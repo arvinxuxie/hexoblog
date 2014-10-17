@@ -2,8 +2,9 @@
 layout: post
 title: Object-Oriented Programming
 category: python
-tags: core-python
+tags: [core_python]
 ---
+<!--more-->
 ## Introduction
 类与实例相互联系：类是对象的定义，而实例是“真正的实物”,它存放了类中所定义的对象的具体信息。所有新式类必须继承至少一个父类，参数`bases`可以是一个(单继承`single inheritance`)或多个(多重继承`multiple inheritance`)的父类。
 ```
@@ -392,7 +393,320 @@ In [338]: class EmplAddrBookEntry(AddrBookEntry):
    .....:         self.email = em
 ```
 ## 静态方法和类方法`Static Methods and Class Methods`
-在静态方法加入到Python之前，用户只能在全局名字空间中创建函数，作为这种性质的
+在静态方法加入到Python之前，用户只能在全局名字空间中创建函数，作为这种特性的替代实现-有时在这样的函数中使用对象来操作类(或是类属性),使用模块函数比使用静态类方法更常见。
+通常的方法需要一个实例(self)作为第一个参数，并且对于(绑定的)方法调用来说，`self`是自动传递给这个方法的。对于类方法而言，需要的不是i实例作为第一个参数，它是由解释器传给方法。类不需要特别地命名，类似`self`，不过很多人使用`cls`作为变量名字。
+**`staticmethod() and classmethod() Built-in-Functions`**
+```
+In [350]: class TestStaticMethod:
+   .....:     def foo():
+   .....:         print 'calling static method foo()'
+   .....:     foo = staticmethod(foo)
+In [351]: class TestClassMethod:
+   .....:     def foo(cls):
+   .....:         print 'calling class method foo()'
+   .....:         print 'foo() is part of class:', cls.__name__
+   .....:     foo = classmethod(foo)
+In [359]: tsm = TestStaticMethod()
+In [360]: TestStaticMethod.foo()
+calling  static method foo()
+In [361]: tsm.foo()
+calling  static method foo()
+In [362]: tcm = TestClassMethod()
+In [363]: TestClassMethod.foo()
+calling class method foo()
+foo() is part of class: TestClassMethod
+In [364]: tcm.foo()
+calling class method foo()
+foo() is part of class: TestClassMethod
+```
+**使用函数修饰符**`Using Decorators`
+Now, seeing code like `foo = staticmethod(foo)` can irritate some programmers(会刺激一些程序员).很多人对这样一个没有意义的语法感到心烦。通过修饰符可以用它把一个函数应用到另一个函数对象上，而且新函数对象依然绑定在原来的变量。通过使用`decorators`,我们可以避免像上面那样重新赋值：
+```
+In [366]: class TestStaticMethod:
+   .....:     @staticmethod
+   .....:     def foo():
+   .....:         print 'calling static method foo()'
+   .....: class TestClassMethod:
+   .....:     @classmethod
+   .....:     def foo(cls):
+   .....:         print 'calling class method foo()'
+   .....:         print 'foo() is part of class:', cls.__name__
+
+In [367]: tsm = TestStaticMethod()
+In [368]: TestStaticMethod.foo()
+calling static method foo()
+In [369]: tsm.foo()
+calling static method foo()
+In [370]: tcm = TestClassMethod()
+In [371]: TestClassMethod.foo()
+calling class method foo()
+foo() is part of class: TestClassMethod
+In [372]: tcm.foo()
+calling class method foo()
+foo() is part of class: TestClassMethod
+```
+**组合**`Composition`
+一个类被定义后，目标就是要把它当成一个模板块来使用，并把这些对象嵌入到你的代码中去，同其他数据类型及逻辑执行流混合使用。第一种是组合`composition`，就是让不同的类混合并加入到其它类中，来增加功能和代码重用性。(This is where different classes are mingled with and into other classes for added functionality and code resusablity)。你可以在一个大点的类中创建你自己的类的实例，实现一些其它属性和方法来增强对原来的类的对象。另一种方法是通过派生。
+让我们对地址本类的加强性设计，如果在设计过程中，为`names, addresses`等等创建了单独的类。最后我们可能想把这些工作集成到`AddrBookEntry`类中去，而不是重新设计每一个需要的类。这样就节省了时间和精力，而且最后的结果是容易维护的代码。
+```
+In [373]: class NewAddrBookEntry(object):
+   .....:     'new address book entry class'
+   .....:     def __init__(self, nm, ph):
+   .....:         self.name = Name(nm)
+   .....:         self.phone = Phone(ph)
+   .....:         print 'Created instance for:', self.name
+```
+创建复合对象就可以实现这些附加的功能，并且很有意义，因为这些类都不相同。每一个类管理它们自己的名字空间和行为。不过当对象之间有更接近的关系时，派生的概念可能对你的应用程序来说更有意义，特别是当你需要一些相似的对象，但却有少许不同的功能的时候。
+
+**子类和派生**`Subclassing and Derivation`
+当类之间有显著的不同，并且较小的类是较大的类所需要的组件时，组合表现的很好，但当你设计“相同的类但有一些不同的功能”时，派生就是一个更加合理的选择。
+
+OOP的更强大方面之一是能够使用一个已经定义好的类，扩展它或者对其进行修改，而不会影响系统中使用现存类的其它片段。OOD允许类特征在子孙类或子类中进行继承。这些子类从基类(或称祖先类，超类)`descendant classes or subclasses`继承它们的核心属性。而且，这些派生可能会扩展到多代。在一个层次的派生关系中的相关类(或者是在类树图中垂直相邻)是父类和子类关系。从同一个父类派生出来的这些类(或者是在类树图中水平相邻)是同胞关系。父类和所有高层类都被认为是祖先。
+
+**创建子类**`Creating Subclasses`
+创建子类的语法看起来与普通类没有区别，一个类名，后跟一个或多个需要从其中派生的父类：
+```
+class SubClassName(ParentClass[,ParentClass2,...]):
+    ‘optional class documentation string’
+    class_suite
+```
+### 继承`Inheritance`
+继承描述了基类的属性如何“遗传”给派生类。一个子类可以继承它的基类的任何属性，不管是数据属性还是方法。
+```
+In [375]: class P(object):    # parent class
+   .....:     pass
+   .....: class C(P):     #child class
+   .....:     pass
+
+In [376]: c = C()     #instantiation child
+In [377]: c.__class__    #child “is a” parent
+Out[377]: __main__.C
+In [378]: C.__bases__     # child’s parent class(es)
+Out[378]: (__main__.P,)
+
+In [380]: class P:
+   .....:     'P classes'
+   .....:     def __init__(self):
+   .....:         print 'created an instance of', self.__class__.__name__
+   .....: class C(P):
+   .....:     pass
+
+In [381]: p = P()    #parent instance
+created an instance of P
+In [382]: p.__class__     #class that created us
+Out[382]: __main__.P
+In [383]: P.__bases__       # parent’s parent classes(es)
+Out[383]: ()
+In [384]: P.__doc__     #parent’s doc string
+Out[384]: 'P classes'
+```
+**`__bases__ Class Attribute`**
+对任何子类，它是一个包含其父类`parent`的集合的元组。注意，我们明确指出”父类”是相对所有基类(它包括了所有祖先类)而言。那些没有父类的类，它们的`__base__`属性为空。
+**通过继承覆盖方法**`Overriding Methods through Inheritance`
+```
+In [392]: class P(object):
+   .....:     def foo(self):
+   .....:         print 'Hi, I am P-foo()'
+
+In [393]: p = P()
+In [394]: p.foo()
+Hi, I am P-foo()
+
+In [395]: class C(P):
+   .....:     def foo(self):
+   .....:         print 'Hi, I am C-foo()'
+
+In [396]: c = C()
+In [397]: c.foo()
+Hi, I am C-foo()
+```
+调用被覆盖的父类的方法，典型情况下，你会在子类的重写方法里显示地调用基类方法。
+```
+class C(P):
+    def foo(self):
+        P.foo(self)
+        print ‘Hi, I am C-foo()’
+```
+注意这个未绑定方法调用中我们显式地传递了self。一个更好的办法是使用`super()`内建方法：
+```
+In [400]: class C(P):
+   .....:     def foo(self):
+   .....:         super(C, self).foo()
+   .....:         print 'Hi, I am C-foo()'
+
+In [401]: c = C()
+In [402]: c.foo()
+Hi, I am P-foo()
+Hi, I am C-foo()
+```
+**Core Note**: 重写`__init__`不会自动调用基类的`__init__`
+类似于上面的覆盖非特殊方法，当从一个带构造器`__init__()`的类派生，如果你不去覆盖`__init__()`,它将会被继承自动调用。但如果你在子类中覆盖了`__init__()`,子类被实例化时，基类的`__init__()`就不会被自动调用。如果你还想调用基类`__init__()`,需要使用一个子类的实例去调用基类(未绑定)方法。
+```
+class C(P):
+    def __init__(self):
+        P.__init__(self)
+        print “calling C’s constructor”
+```
+使用`super()`的重点是你不需要明确提供父类，这意味着如果你改变了类继承关系，你只需要改一行(class 语句本身)而不必在大量代码中去查找所有被修改的那个类的名字。
+
+### 从标准类型派生`Deriving Standard Types`
+**不可变类型的例子**`Immutable Type Example`:假定你想在金融应用中，应用一个处理浮点数的子类。每次你得到一个货币值(浮点数给出的)，你都需要通过四舍五入，变为带两位小数位的数值。(`Decimal`类比起标准浮点类型来说是个用来精确保存浮点值的更加方案，但你还是有时候需要对其进行舍入操作)。
+```
+In [403]: class RoundFloat(float):
+   .....:     def __new__(cls, val):
+   .....:         return super(RoundFloat, cls).__new__(cls, round(val, 2))
+
+In [404]: RoundFloat(1.5955)
+Out[404]: 1.6
+In [405]: RoundFloat(1.5945)
+Out[405]: 1.59
+In [406]: RoundFloat(-1.9955)
+Out[406]: -2.0
+```
+**可变类型的例子**`Mutable Type Example`:子类化一个可变类型与此类似，你可能不需要使用`__new_()`(或甚至`__init__()`), 因为通常设置不多。一般情况下，你所继承到的类型的默认行为就是你想要的。下例中，我们简单地创建一个新的字典类型，它的`keys()`方法会自动排序结果：
+```
+In [412]: class SortedKeyDict(dict):
+   .....:     def keys(self):
+   .....:         return sorted(super(SortedKeyDict, self).keys())
+   .....: d = SortedKeyDict((('zheng-cai', 67), ('hui-jun', 68), ('xin-yi', 2)))
+   .....: print 'By iterator:'.ljust(12), [key for key in d]
+   .....: print 'By keys():'.ljust(12), d.keys()
+   .....: 
+By iterator: ['zheng-cai', 'xin-yi', 'hui-jun']
+By keys():   ['hui-jun', 'xin-yi', 'zheng-cai']
+```
+一定要谨慎，而且要意识到你正在干什么。如果你的方法调用`super()`过于复杂，取而代之可以这样：
+```
+def keys(self):
+    return sorted(self.keys())
+```
+**多重继承**`Multiple Inheritance`
+**方法解释顺序(MRO)**`Method Resolution Order`
+Python2.2以前，算法非常简单：深度优先，从左至右进行搜索，取得在子类中使用的属性。其他Python算法只是覆盖被找到的名字，多重继承则取找到的第一个名字。
+由于类，类型和内建类型的子类，都经过全新改造，有了新的结构，这种算法不再可行。这样一种新的MRO算法被开发出来。
+**Core Note**:Python 2.2使用一种唯一但不完善的MRO
+算法的基本思想是根据每个祖先类的继承结构，编译出一张列表，包括搜索到的类，按策略删除重复的。然而，在Python核心开发人员邮件列表中有人指出，在维护单调性方面失败过(顺序保存)，必须使用新的C3算法替换。
+
+简单属性查找示例
+![]({{BASE_PATH}}/image/core_python/imag5.png)
+**经典类**`Classic Classes`:
+经典类使用解释顺序，深度优先，从左至右
+```
+In [414]: class P1:    #parent class1
+   .....:     def foo(self):
+   .....:         print 'called P1-foo()'
+   .....: class P2:     #parent class 2
+   .....:     def foo(self):
+   .....:         print 'called P2-foo()'
+   .....:     def bar(self):
+   .....:         print 'called P2-bar()'
+   .....: class C1(P1, P2):         #child 1 der. from P1, P2
+   .....:     pass
+   .....: class C2(P1, P2):        #child 2 der. from P1, P2
+   .....:     def bar(self):
+   .....:         print 'called C2-bar()'
+   .....: class GC(C1, C2):         #define grandchild class derives 
+   .....:     pass
+
+In [415]: gc = GC()
+In [416]: gc.foo()    #GC ==> C1 ==> P1
+called P1-foo()
+In [417]: gc.bar()    #GC ==> C1 ==> P1 ==> P2
+called P2-bar()
+```
+**新式类**`New-Style Classes`
+与沿着继承树一步一步上溯不同，它首先查找同胞兄弟，采用一种广度优先的方式。当查找`foo()`,它检查GC，然后是C1和C2，然后是P1中找到，如果P1没有，查找将会到达P2。
+```
+In [418]: class P1(object):
+   .....:     def foo(self):
+   .....:         print 'called P1-foo()'
+   .....: class P2(object):
+   .....:     def foo(self):
+   .....:         print 'called P2-foo()'
+   .....:     def bar(self):
+   .....:         print 'called P2-bar()'
+   .....: class C1(P1, P2):
+   .....:     pass
+   .....: class C2(P1, P2):
+   .....:     def bar(self):
+   .....:         print 'called C2-bar()'
+   .....: class GC(C1, C2):
+   .....:     pass
+
+In [419]: gc = GC()
+In [420]: gc.foo()    #GC ==> C1 ==> C2 ==> P1
+called P1-foo()
+In [421]: gc.bar()      #GC ==> C1 ==> C2
+called C2-bar()
+```
+然而，如果你还需要调用上一级，只要按前述方法，使用非绑定的方式去做。
+```
+In [422]: P2.bar(gc)
+called P2-bar()
+```
+新式类也有一个`__mro__`属性，告诉你查找顺序：
+```
+In [423]: GC.__mro__
+Out[423]: (__main__.GC, __main__.C1, __main__.C2, __main__.P1, __main__.P2, object)
+```
+
+## 类、实例和其他对象内建函数`Built-in Functions for Classes, Instances and Other Objects`
+`issubclass(sub, sup)`    Returns true if class sub is a subclass of class sup, False otherwise
+`isinstance(obj1, obj2)`   Returns true if instance obj1 is an instance of class obj2 or is an instance of a subclass of obj2; will also return True if obj1 is of type obj2; otherwise it returns False
+`hasattr(obj, attr)`   Returns True if obj has attribute attr(give as a string), False otherwise
+`getattr(obj, attr[,default])`   Retrieves attribute attr of obj; same as return as return obj.attr; if attr is not an attribute of obj, default return if given; else `AttributeError` exception raised
+`setattr(obj,attr,val)`   Sets attribute attr of obj to value val, over riding any previously existing attribute value; otherwise, attribute is created; same as obj. attr = val
+`delattr(obj, attr)`   Removes attribute attr (given as a string) from obj; same as del obj.attr
+`dir(obj=None)`   Returns a proxy object representing the super class of type; if obj is not passed in, the super object returned is unbound; otherwise if obj is a type issubclass(obj, type) must be True; otherwise isinstance(obj, type) must be True.
+`vars(obj=None)`   Returns a dictionary of the attributes and values of obj; if obj not given, vars() displays local namespace dicionary (attributes and values),i.e. locals()
+```
+In [425]: class C1(object):
+   .....:     pass
+   .....: class C2(object):
+   .....:     pass
+
+In [426]: c1 = C1()
+In [427]: c2 = C2()
+In [428]: isinstance(c1, C1)
+Out[428]: True
+In [429]: isinstance(c2, C1)
+Out[429]: False
+In [430]: isinstance(4, int)
+Out[430]: True
+
+In [431]: class myClass(object):
+   .....:     def __init__(self):
+   .....:         self.foo = 100
+
+In [432]: myInst = myClass()
+In [433]: hasattr(myInst, 'foo')
+Out[433]: True
+In [434]: getattr(myInst, 'foo')
+Out[434]: 100
+In [435]: hasattr(myInst, 'bar')
+Out[435]: False
+In [436]: setattr(myInst, 'bar', 'my attr')
+In [437]: dir(myInst)
+Out[437]:
+['bar', 'foo']
+In [438]: getattr(myInst, 'bar')
+Out[438]: 'my attr'
+In [439]: delattr(myInst, 'foo')
+In [440]: hasattr(myInst, 'foo')
+Out[440]: False
+
+In [442]: class C(object):
+   .....:     pass
+
+In [443]: c = C()
+In [444]: c.foo = 100
+In [445]: c.bar = 'Python'
+In [446]: c.__dict__
+Out[446]: {'bar': 'Python', 'foo': 100}
+In [447]: vars(c)
+Out[447]: {'bar': 'Python', 'foo': 100}
+```
+## 用特殊方法定制类`Special Method for Customizing Classes`
 
 
 

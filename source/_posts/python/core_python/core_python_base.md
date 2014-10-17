@@ -1,8 +1,8 @@
 ---
 layout: post
-title: core_python
+title: core_python_base
 category: python
-tags: [python]
+tags: [core_python]
 mathjax: true
 ---
 # python基础

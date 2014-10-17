@@ -2,11 +2,12 @@
 layout: post
 title: core_python_file
 category: python
-tags: [python]
+tags: [core_python]
 mathjax: true
 ---
 
 # 文件
+<!--more-->
 **文件内建函数**(open()和file())
 文件对象的访问模式
 `r`     只读方式打开

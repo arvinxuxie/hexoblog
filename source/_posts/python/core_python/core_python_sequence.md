@@ -2,7 +2,7 @@
 layout: post
 title: core_python_sequence
 category: python
-tags: [python]
+tags: [core_python]
 mathjax: true
 ---
 

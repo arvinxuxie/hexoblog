@@ -5,6 +5,7 @@ category: python
 tags: python
 ---
 ## 科学Python构件
+<!--more-->
 * **Python**: 
 * **IPython**: 一个高级的[Python shell](http://ipython.scipy.org/moin/)
 * **Numpy**: 提供强大的`numerical arrays`对象，以及操纵它们的例程。[http://www.numpy.org/](http://www.numpy.org/)
