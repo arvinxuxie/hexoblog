@@ -707,6 +707,189 @@ In [447]: vars(c)
 Out[447]: {'bar': 'Python', 'foo': 100}
 ```
 ## 用特殊方法定制类`Special Method for Customizing Classes`
+**Basic Customization**
+`C.__init__(self[, argq, ...])`:    构造器(带一些可选参数)
+`C.__new__(self[, arg1, ...])`:   构造器(带一些可选参数); 通常用在设置不变数据类型的子类
+`C.__del__(self)`:   解构器
+`C.__str__(self)`:   可打印的字符串输出; 内建`str()`及`print`语句
+`C.__repr__(self)`:   运行时的字符串输出; 内建`repr()`和\`\`操作
+`C.__unicode__(self)`:   Unicode字符串输出;内建`unicode()`
+`C.__call__(self, *args)`:   表示可调用的实例
+`C.__nonzero__(self, *args)`   为`object`定义False值;内建bool()
+`C.__len__(self)`:   “长度”(可用于类);内建`len()`
 
+**Object(Value) Comparison**
+`C.__cmp__(self, obj)`:   对象比较;内建`cmp()`
+`C.__lt__(self, obj) and C.__le__(self, obj)`:   `<`或`<=`操作
+`C.__gt__(self, obj) and C.__ge__(self, obj)`:   `>`或`>=`操作
+`C.__eq__(self, obj) and C.__ne__(self, obj)`:   `==`或`!=`操作
 
+**Attributes**
+`C.__getattr__(self, attr)`:   获取属性;仅当属性没有找到时调用
+`C.__setattr__(self, attr, val)`:   设置属性
+`C.__delattr__(self, attr)`:   删除属性
+`C.__getattribute__(self, attr)`:   获取属性;内建`getattr()`;总是被调用
+`C.__get__(self, attr)`:   (描述符`descriptor`)获取属性
+`C.__set__(self, attr, val)`:   (描述符)设置属性
+`C.__delete__(self, attr)`:   (描述符)删除属性
 
+**Customizing Classes/ Emulating Types**
+
+**Numeric Type: Binary Operators**
+`C.__*add__(self, obj)`:   Addtion; `+` operator
+`C.__*sub__(self, obj)`:   Subtraction; `-` operator
+`C.__*mul__(self, obj)`:   Multiplication; `*` operator
+`C.__*div__(self, obj)`:   Division; `/` operator
+`C.__*truediv__(self, obj)`:   True division; `/` operator
+`C.__*floordiv__(self, obj)`:   Floor division; `//` operator
+`C.__*mod__(self, obj)`:   Modulo/remainder; `%` operator
+`C.__*divmod__(self, obj)`:   Divsion and modulo; `divmod()` built-in
+`C.__*pow__(self, obj[, mod])`:   Exponentiation; `pow()` built-in; `**` operator
+`C.__*lshift__(self, obj)`:   Left shift; `<<` operator
+`C.__*rshift__(self, obj)`:   Right shift; `>>` operator
+`C.__*and__(self, obj)`:   Bitwise AND; `&` operator
+`C.__*or__(self, obj)`:   Bitwise OR; `|` operator
+`C.__*xor_(self, obj)`:   Bitwise XOR; `^` operator
+
+**一元操作符`Numeric Type: Unary Operator`**
+`C.__neg__(self)`:   一元负(Unary negation)
+`C.__pos__(self)`:   一元正(Unary no-change)
+`C.__abs__(self)`:   Absolute value; `abs()` built-in
+`C.__invert__(self)`:   Bit inversion; `~` operator
+
+**Numeric Type: Numeric Conversion**
+`C.__complex__(self, com)`:   Convert to complex; `complex()` built-in
+`C.__int__(self)`:   Convert to int; `int()` built-in
+`C.__long__(self)`:   Convert to long; `long()` built-in
+`C.__float__(self)`:   Convert to float; `float()` built-in
+
+**基本表示法`Numeric Type: Base Representation`**
+`C.__oct__(self)`:   八进制表示(Octal representation; `oct()` built-in)
+`C.__hex__(self)`:   十六进制表示(Hexadecimal representation; `hex()` built-in)
+
+**数值压缩`Numeric Types: numeric coercion`**
+`C.__coerce__(self, num)`:   压缩成同样的数值类型;Coerce to same numeric type; `coerce()` built-in
+`C.__index__(self)`:   在有必要时，压缩可选的数值类型为整形(比如: 用于切片索引等等)(Coerce alternate numeric type to integer if/when necessary)
+
+**Sequence Types**
+`C__len__(self)`:   Number of items in sequence
+`C.__getitem__(self, ind, val)`:   Get single swquence element
+`C.__setitem__(self, ind, val)`:   Set single sequece element
+`C.__delitem__(self, ind)`:   Delete single sequence element
+**Sepcial Method**
+`C.__getslice__(self, ind1, ind2)`:   Get sequence slice
+`C.__setslice__(self, i1, i2, val)`:   Set sequence slice
+`C.__delslice__(self, ind1, ind2)`:   Delete sequence slice
+`C.__contains__(self, val)`:   Test sequence membership; `in` keyword
+`C.__*add__(self, obj)`:   Concatenation; `+` operator
+`C.__*mul__(self, obj)`:   Repetition; `*` operator
+`C.__iter__(self, obj)`:   Create iterator class; `iter()` built-in
+
+**Mapping Types**
+`C._len__(self)`:   Number of items in mapping
+`C.__hash__(self)`:   Hash function value
+`C.__getitem__(self, key)`:   Get value with given `key`
+`C.__setitem__(self, key, val)`:   Set `value` with given `key`
+`C.__delitem__(self, key)`:   Delete value with given `key`
+`C.__missing__(self, key)`:   Provides default value when dictionary does not have given `key`
+上面在它们的名字中，用星号`*`通配符标注的数值二进制操作符则表示这些方法有多个版本。
+增量赋值`Augmented assignment`，“原位`in-place`”操作符。一个“i”代替星号位置，表示左结合操作与赋值的结合。
+
+**简单制定**`Simple Customizationi(roundFloat2.py)`
+`print`(使用`str()`)和真正的字符串对象表示(使用`repr()`)。一个好的办法是，去实现`__str__()`和`__repr__()`二者之一。
+```
+In [3]: class RoundFloatManual(object):
+   ...:     def __init__(self, val):
+   ...:         assert isinstance(val, float), "Value must be a float"
+   ...:         self.value = round(val, 2)
+   ...:     def __str__(self):
+   ...:         return str(self.value)
+
+In [4]: rfm = RoundFloatManual(5.590463)
+In [5]: rfm
+Out[5]: <__main__.RoundFloatManual at 0x2455cd0>
+In [6]: print rfm
+5.59
+```
+我们还有一些问题，一个问题是仅仅在解释器中转储`dump`对象时，仍然显示的默认对象符号。最好的方案在`__str__()`中代码也是一个对象，同所有对象一样，引用可以指向他们，所以我们可以仅仅让`__repr__()`作为`__str__()`的一个别名。
+```
+In [8]: class RoundFloatManual(object):
+   ...:     def __init__(self, val):
+   ...:         assert isinstance(val, float), "Value must be a float!"
+   ...:         self.value = round(val, 2)
+   ...:     def __str__(self):
+   ...:         return '%.2f' % self.value
+   ...:     __repr__ = __str__
+
+In [9]: rfm = RoundFloatManual(5.5964)
+In [10]: rfm
+Out[10]: 5.60
+In [11]: print rfm
+5.60
+```
+**数值定制**`Numeric Customization`
+重载的方法有加法`Addition`和原位加法`In-Place Addtion`
+```
+In [1]: class Time60(object):
+   ...:     def __init__(self, hr, min):
+   ...:         self.hr = hr
+   ...:         self.min = min
+   ...:     def __str__(self):
+   ...:         return '%d:%d' %(self.hr, self.min)
+   ...:     __repr__ = __str__
+   ...:     def __add__(self, other):
+   ...:         return self.__class__(self.hr + other.hr, self.min + other.min)
+   ...:     def __iadd__(self, other):
+   ...:         self.hr += other.hr
+   ...:         self.min += other.min
+   ...:         return self
+
+In [2]: mon = Time60(10, 30)
+In [3]: tue = Time60(11, 15)
+In [4]: mon
+Out[4]: 10:30
+In [5]: mon += tue
+In [6]: mon
+Out[6]: 21:45
+```
+**迭代器**`Iterators`
+`__init__()`方法执行前述的赋值操作，`__iter__()`仅返回`self`，这就是如何将一个对象声明为迭代器的方式，最后，调用`next()`来得到迭代器中连续的值。
+这个例子展示了一些我们可以用定制类迭代器来做的与众不同的事情--无穷迭代。他不会越界，每次用户调用`next()`时，他会得到下一个迭代值。
+```python
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+from random import choice
+class RandSeq(object):
+    def __init__(self, seq):
+        self.data = seq
+
+    def __iter__(self):
+        return self
+
+    def next(self):
+        return choice(self.data)
+```
+**AnyIter**: 任意项的迭代器(anyIter.py)
+```python
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+class AnyIter(object):
+    def __init__(self, data, safe=False):
+        self.safe = safe
+        self.iter = iter(data)
+
+    def __iter__(self):
+        return self
+
+    def next(self, howmany=1):
+        retval = []
+        for eachIterm in range(howmany):
+            try:
+                retval.append(self.iter.next())
+            except StopIteration:
+                if self.safe:
+                    break
+                else:
+                    raise
+        return retval
+```
