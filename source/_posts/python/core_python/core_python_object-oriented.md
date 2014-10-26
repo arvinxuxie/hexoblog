@@ -893,3 +893,125 @@ class AnyIter(object):
                     raise
         return retval
 ```
+**多类型定制(NumStr)**
+```
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+class NumStr(object):
+    def __init__(self, num=0, string=''):
+        self.__num = num
+        self.__string = string
+
+    def __str__(self):   #define for str()
+        return '[%d::%r]' % (self.__num, self.__string)
+    __repr__ = __str__
+
+    def __add__(self, other):    #define for s+o
+        if isinstance(other, NumStr):
+            return self.__class__(self.__num+other.__num, self.__string+other.__string)
+        else:
+            raise TypeError, 'Illegal argument type for built-in operation'
+
+    def __mul__(self, num):    #define for o*n
+        if isinstance(num, int):
+            return self.__class__(self.__num*num, self.__string*num)
+        else:
+            raise TypeError, 'Illegal argument type for built-in operation'
+
+    def __nonzero__(self):
+        return self.__num or len(self.__string)
+
+    def __norm_cval(self, cmpres):    #normalize cmp()
+        return cmp(cmpres, 0)
+
+    def __cmp__(self, other):    # define for cmp()
+        return self.__norm_cval(cmp(self.__num, other.__num))+self.__norm_cval(cmp(self.__string, other.__string))
+```
+### 私有化`Privacy`
+**双下划线**`Double Underscore(__)`: 由双下划线开始的属性在运行时被“混淆”`thwared`。例`self.__num`属性被混淆后，用于访问这个数值的标识就变成了`self._NumStr__num`。把类名加上后形成新的“混淆”结果可以防止在祖先类或子孙类中的同名冲突。
+这种名字混淆的另一个目的是为了保护`__XXX`变量不与父类名字空间相冲突。如果在类中有一个`__XXX`属性，它将不会被其子类中的`__XXX`属性覆盖。
+**单下划线**`Single Underscore(_)`: 简单的模块级私有化只需要在属性名前使用一个单下划线字符。这就防止模块的属性用`from mymodule import *`来加载。这是严格基于作用域的，所以同样适合于函数。
+
+### 授权`*Delegation`
+**包装**`Wrapping`: 在Python编程世界中经常会被提到的一个术语。它是一个通用的名字，意思是对一个已存在的对象进行包装，不管它是数据类型，还是一段代码，可以是一个已存在的对象，增加新的，删除不要的，或者修改其它已存在的功能。
+
+**类对象(其表现像类型)**`Class Object(Which Behaves Like a Type)`
+你还可以包装类，但不会有太多用途，因为已经有用于操作对象的机制，并且在上面已描述过，对标准类型有对其进行包装的方式——可以采用派生。
+
+**实现授权**`Implementing Delegation`:授权是包装的一个特性，可用于简化处理有关`dictating`功能，采用已存在的功能已达到最大限度的代码重用。
+
+包装一个类型通常是对已存在的类型的一些定制。授权的过程，即是所有更新的功能都是由新类的某部分来处理，但已存在的功能就授权给对象默认属性。
+
+实现授权的关键点就是覆盖`__getattr__()`方法，在代码中包含一个对`getattr()`内建函数的调用。特别地，调用`getattr()`以得到默认对象属性(数据属性或着方法)并且返回它以便访问或调用。特殊方法`__getattr__()`的工作方式是，当搜索一个属性时，任何局部对象首先被找到(定制的对象)。如果搜索失败了，则`__getattr__()`会被调用，然后调用`getattr()`得到一个对象的默认行为。
+
+**Wrapping Standard Types(twrapme.py)**
+```python
+Class definition that wraps any built-in type, adding time attributes; get(), set() and string representation methods; and delegating all remaing attribute access to those of the standard type.
+
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+from time import time, ctime
+class TimedWrapMe(object):
+    def __init__(self, obj):
+        self.__data = obj
+        self.__ctime = self.__mtime = self.__atime = time()
+
+    def get(self):
+        self.__atime = time()
+        return self.__data
+
+    def gettimeval(self, t_type):
+        if not isinstance(t_type, str) or t_type[0] not in 'cma':
+            raise TypeError, "argument of 'c', 'm', or 'a' req "
+        return getattr(self, '_%s__%stime' %(self.__class__.__name__, t_type[0]))
+
+    def gettimestr(self, t_type):
+        return ctime(self.gettimeval(t_type))
+
+    def set(self, obj):
+        self.__data = obj
+        self.__mtime = self.__atime = time()
+
+    def __str__(self):
+        self.__atime = time()
+        return str(self.__data)
+
+    __repr__ = __str__
+
+    def __getattr__(self, attr):
+        self.__atime = time()
+        return getattr(self.__data, attr)
+```
+### 新式类的高级特性`Advanced Feature of New-Style Classes`
+**`__slots__`类属性**
+字典位于实例的“心脏”。`__dict__`属性跟踪所有实例属性。你有一个实例inst，它有一个属性foo，那么使用`inst.foo`来访问与使用`inst.__dict__[‘foo’]`来访问是一致的。
+字典会占据大量内存，如果你有一个属性数量很少的类，但有很多实例，为内存上的考虑，用户可以使用`__slots__`属性来替代`__dict__`。
+
+**特殊方法`__getattribute__()`**
+类似`__getattr__()`,不同之处在于，当属性被访问时，它就一直都可以被调用，而不局限于不能找到的情况。
+
+**描述符`Descriptors`**
+描述符是Python新式类中的关键点之一。它为对象属性提供了强大的API。你可以认为描述符是表示对象属性的一个代理。当需要属性时，可根据你遇到的情况，通过描述符(如果有)或者采用常规方式(句点属性标识法)来访问它。
+如果你的对象有代理，并且这个代理有一个“get”属性(实际写法为`__get__`),当这个代理被调用时，你就可以访问这个对象了。当你试图使用描述符`set`给一个对象赋值或删除一个属性`delete`时，这同样适用。
+**`__get__(), __set__(), __delete__()`特殊方法**
+严格来说，描述符实际上可以是任何新式类，这种类至少实现了三种特殊方法`__get__(), __set__(), __delete__()`中的一个，这三种特殊方法充当描述符协议的作用。
+The signatures for `__get__(), __set__(), __delete__()` look like this:
+```
+def __get__(self, obj, type=None) ==> value
+def __set__(self, obj, val) ==> None
+def __delete__(self, obj) ==> None
+```
+如果你想要为一个属性写个代理，必须把它作为一个类的属性，让这个代理来为我们做所有的工作。当你用这个代理来处理对一个属性的操作时，你会得到一个描述符来代理所有的函数功能。
+**`__getattribute__()`特殊方法**
+使用描述符的顺序很重要，有一些描述符的级别要高于其他的。整个描述符系统的心脏是`__getattribute__()`，因为对每个属性的实例都会调用到这个特殊的方法。这个方法被用来查找类的属性，同时也是你的一个代理，调用它可以进行属性的访问等操作。
+**优先级别`Precedence`**
+由于`__getattribute__()`的实现方式很特别，我们在此对`__getattribute__()`方法的执行方式做一下介绍。
+* 类属性  (Class attribute)
+* 数据描述符   (Data descriptors)
+* 实例属性     (Instance attributes)
+* 非数据描述符    (Non-data descriptors)
+* 默认为`__getattr__()`
+描述符是一个类属性，因此所有类属性皆具有最高的优先级。你其实可以把一个描述符的引用赋给其他对象来替换这个描述符。比它们优先级别低一等级的是实现了`__get__()`和`__set__()`方法的描述符。如果你实现了这个描述符，它会像一个代理那样帮助你完成所有的工作。
+否则，它就默认为局部对象的`__dict__`的值，也就是说，它可以是一个实例属性。接下来是非数据描述符。非数据描述符的目的只是当实例属性值不存在时，提供一个值而已。
+
