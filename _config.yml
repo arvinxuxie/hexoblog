@@ -82,6 +82,9 @@ disqus_shortname:
 theme: landscape
 exclude_generator:
 
+# Mathjax
+mathjax: true
+
 # Deployment
 ## Docs: http://hexo.io/docs/deployment.html
 deploy:

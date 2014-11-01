@@ -1,19 +1,18 @@
 ---
 layout: post
-title: apue_file
+title: apue_file_I/O
 category: c/c++
 tags: [apue, c]
 ---
 <!--more-->
-## File I/O
-### 文件描述符`File Descriptors`
+## 文件描述符`File Descriptors`
 对于内核来说，所有打开的文件都通过文件描述符来引用，一个文件描述符是一个非负整数。当我们打开一个已存在的文件或是创建一个新的文件，内核返回一个文件描述符给这个进程。当读或是写一个文件时，使用`open`或是`creat`返回的文件描述符标识该文件，将其作为参数传递给`read`或`write`。
 
 通常，Unix系统shell将文件描述符0和进程的标准输入`standard input`相关联，文件描述符1和标准输出`standard ouput`相关联，文件描述符2和标准出错输出`standard error`相关联。这种惯例在`shell`中及其他很多应用中被使用，并不是Unix内核的特性。
 在依从POSIX的应用程序中，幻数`magic numbers` 0, 1, 2应当替换成符号常量`symbolic constants`: `STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO`来增加可读性。这些常量`constants`被定义在`<unistd.h>`头文件里。
 文件描述符的变化范围是`0~OPEN_MAX`。早期每个进程允许打开文件最多是20个，后来很多系统将其增加到63。
 
-### `open`和`openat`函数
+## `open`和`openat`函数
 文件被打开或是创建通过调用`open`函数或是`openat`函数
 ```c
 #include <fcntl.h>
@@ -45,7 +44,7 @@ int openat(int fd, const char *path, int oflg, .../*mode_t mode*/);
 **文件名和路径名截断**`Filename and Pathname Truncation`
 在`POSIX.1`中，常量`_POSIX_NO_TRUNC`决定了是要截断过长得文件名或路径名，还是返回一个出错。若`_POSIX_NO_TRUNC`有效，则在整个路径名超过`PATH_MAX`,或路径名中的任一文件名超过`NAME_MAX`时，返回出错状态，并将`errno`设置为`ENAMETOOLONG`。
 
-### `creat`函数
+## `creat`函数
 一个新的文件可以被创建通过调用函数`creat`
 ```c
 #include <fcntl.h>
@@ -56,7 +55,7 @@ int creat(const char *path, mode_t mode);
 `open(path, O_WRONLY | O_CREAT | O_TRUNC, mode);`
 `creat`的一个不足之处是它以只写方式打开所创建得文件。
 
-### `close`函数
+## `close`函数
 可以调用一个`close`函数关闭打开得文件
 ```c
 #include <unistd.h>
@@ -65,7 +64,7 @@ int close(int fd);
 ```
 当一个进程终止时，内核自动关闭它所打开得文件，很多程序都利用了这一点而不显示得调用`close`关闭打开文件。
 
-### `lseek`函数
+## `lseek`函数
 每个打开的文件都有一个与其相关联的“当前文件偏移量”`current file offset`，它通常是一个非负整数，用以度量从文件开始计算得字节数。通常读、写操作都是从当前文件偏移量处开始，并使偏移增加所读写得字节数。按系统默认得情况，当打开一个文件时，除非指定`O_APPEND`选项，否则该偏移量被设置为0。可以调用`lseek`显示地为一个打开的文件设置其偏移量。
 ```c
 #include <unist.h>
@@ -83,6 +82,7 @@ currpos = lseek(fd, 0, SEEK_CUR);
 ```
 这种方法也可以用来确定所涉及的文件是否可以设置偏移量。如果文件描述符引用的是一个管道、FIFO或网络套接字，则`lseek`返回`-1`，并将`errno`设置为`ESPIPE`。
 **三个符号常量`SEEK_SET`为0(绝对偏移量)、`SEEK_CUR`为1(相对与当前位置的偏移量)`SEEK_END`为2(想对于文件尾端的偏移量)**
+
 ```c
 #include <stdio.h>
 #include <unistd.h>
@@ -106,7 +106,7 @@ cannot seek
 ```
 通常，文件得当前偏移量应当是一个非负整数，但是，某些设备也可能允许负的偏移量。但对于普通文件，则其偏移量必须是非负值。因为偏移量可能是负值，所以在比较`lseek`的返回值时应当谨慎，不要测试它是否小于0,而要测试它是否等于-1。
 
-### read函数
+## read函数
 调用`read`函数从打开文件中读数据
 ```c
 #include <unistd.h>
@@ -122,7 +122,7 @@ ssize_t read(int filedes, void *buf, size_t nbytes);
 * 当从某些面向记录得设备(例如磁带)读时，一次最多返回一个记录
 * 当某一信号造成中断，而已经读了部分数据量时
 
-### `write`函数
+## `write`函数
 调用write函数向打开的文件写数据
 ```c
 #include <unistd.h>
@@ -132,7 +132,7 @@ ssize_t write(int filedes, const void *buf, size_t nbytes);
 其返回值通常参数`nbytes`的值相同，否则表示出错。`write`出错的一个常见原因：磁盘已满，或者超过了一个给定进程得文件长度限制。
 对于普通文件，则每次写操作之前，将文件偏移设置在文件的当前结尾处。在一次成功写之后，该文件偏移量增加实际写的字节数。
 
-### `I/O`效率
+## `I/O`效率
 程序是用`read`和`write`函数复制一个文件，关于该程序注意下列各点:
 * 它从标准输入读，写至标准输出，这就假定在执行本程序之前，这些标准输入、输出已由shell安排好。所用常用得UNIX系统shell都提供一种方法，它在标准输入上打开一个文件用于读，在标准输出上创建(或重写)一个文件。这使得程序不必自行打开输入输出文件
 * 很多应用程序假定标准输入是文件描述符0, 标准输出是文件描述符1。本例中在<unistd.h>中定义的两个名字`STDIN_FILENO`、`STDOUT_FILENO`
@@ -165,7 +165,7 @@ int main(void)
 系统CPU时间的最小值出现在`BUFFSIZE`为4096处，继续增加缓冲区长度对此时间几乎没有影响。
 大多数文件系统为改善其性能都采用某种预读`read ahead`技术，当检测到正在进行顺序读取时，系统就试图读入比应用程序所要求得更多数据，并假想应用程序很快就会读这些数据。
 
-### 文件共享`File Sharing`
+## 文件共享`File Sharing`
 Unix操作系统支持文件共享在不同得进程之间，在描述`dup`函数之前，我们先来讲述这种共享。我们需要介绍内核用于所有I/O的数据结构。
 内核使用三种数据结构来描述`represent`一个打开的文件，它们之间的关系决定了在文件共享方面一个进程对另一个进程可能产生的影响。
 1. 每个进程在进程表里都有一个记录项，记录项中包含有一张打开文件描述符表，可将其视为一个矢量，每个描述符占用一项。(Every process has an entry in the process table. Within each process table entry is a table of open file descriptors, which we can think of as vector, with one entry per descripter.)与每个文件描述符相关连得是：
@@ -189,7 +189,7 @@ Unix操作系统支持文件共享在不同得进程之间，在描述`dup`函�
 可能有多个文件描述符项`file descriptor entry`指向同一个文件表项`file table entry`,在讨论`dup`函数时就可以看到这一点，在`fork`后也会发生同样的情况，此时父、子进程对于每一个打开得文件描述符共享同一个文件表项。
 **注意**文件描述符标志`file descriptor flags`和文件状态标志`file status flags`在作用域方面的区别。前者只用于一个进程得描述符，而后者则适用于指向该给定文件表项的任何进程中的所有描述符。本节上面所述的一切对于多个进程读同一个文件都能正确工作。每个进程都有它自己的文件表项，其中也有它自己的当前文件偏移量。但是，当多进程写同一个文件时，则可能产生预期不到的结果。
 
-### 原子操作`Atomic Operations`
+## 原子操作`Atomic Operations`
 **添写至一个文件**`Appending to a File`
 UNIX系统提供了一种方法使这种操作成为原子操作，该方法是在打开文件时设置`O_APPEND`标志。正如前一节所述，这就使内核每次对这种文件进行写之前，都将进程的当前偏移量设置到该文件的尾端处，于是在每次写之前就不需要调用`lseek`。
 **`pread`和`write`函数**
@@ -209,7 +209,7 @@ ssize_t pwrite(int fd, const void *buf, size_t nbytes, off_t offset);
 **创建一个文件`Creating a File`**
 在对`open`函数的`O_CREAT`和`O_EXCL`选项进行说明时，我们已见到另一个有关原子操作得例子，我们曾提及检查该文件是否存在以及创建该文件两个操作是作为一个原子操作执行的。一般而言，原子操作(atomic operation)指的是由多步组成的操作。如果该操作原子地执行，则要么执行完所有步骤，要么一步也不执行。
 
-### `dup`和`dup2`函数
+## `dup`和`dup2`函数
 下面两个函数都可以用来复制一个现存得文件描述符：
 ```c
 #include <unistd.h>
@@ -226,7 +226,7 @@ int dup2(int filedes, int filedes2)
 1. `dup2`是一个原子操作，而`close`及`fcntl`则包括两个函数调用。有可能在`close`和`fcntl`之间插入执行信号捕获函数，它可能修改文件描述符。
 2. `dup2`和`fcntl`有某些不同的`errno`
 
-### `sync`、`fsync`和`fdatasync`函数
+## `sync`、`fsync`和`fdatasync`函数
 
 传统UNIX实现在内核中没有缓冲区高速缓冲区或页面高速缓存，大多数磁盘I/O都是通过缓冲进行。当数据写入文件时，内核通常先将该数据复制到其中一个缓冲区中，如果该缓冲区尚未写满，则并不将其排入输出对列，而是等待其写满或者当内核需要重用该缓冲区以便存放其他磁盘块数据时，在将该缓冲排入输出对列，然后待其到达队首时，才进行实际的I/O操作。这种输出方式被称为延迟写`delayed write`。
 
@@ -242,7 +242,7 @@ void sync(void);
 `fsync`函数只对由文件描述符`filedes`指定的单一文件起作用，并且等待写磁盘操作结束，然后返回。`fsync`可用于数据库这样的应用程序，这种应用程序需要确保将修改过的块立即写到磁盘上。
 `fdatasync`函数类似于`fsync`,但它只影响文件的数据部分。而除数据外，`fsync`还会同步更新文件的属性。
 
-### `fcntl`函数
+## `fcntl`函数
 `fcntl`函数可以改变已打开文件的性质
 ```c
 #include <fcntl.h>
@@ -256,5 +256,102 @@ int fcntl(int filedes, int cmd, .../*int arg*/);
 3. 获得/设置文件状态标志(`cmd=F_GETFL`或`F_SETFL`)
 4. 获得/设置异步I/O所有权(`cmd=F_GETOWN`或`F_SETOWN`)
 5. 获得/设置记录锁(`cmd=F_GETLK`、`F_GETLK`或`F_SETLKW`)
+
+我们先说明这10种`cmd`值中的前7种(后三种都与记录锁有关)。我们将涉及进程表项中各文件描述符相关联的文件描述符标志，以及每个文件表项中的文件状态标志。
+`F_DUPFD`:  复制文件描述符filedes,新文件描述符作为函数值返回。它是尚未打开的各描述符中大于或等于第三个参数值(取为整型值)中各值的最小值。新描述符与`filedes`共享同一文件表项。但是，新描述符有它自己的一套文件描述符标志，其`FD_CLOEXEC`文件描述符标志被清除(这表示该描述符在通过一个`exec`时仍保持有效)
+`F_GETFD`:  对应于`filedes`的文件描述符标志作为函数返回值返回。当前只定义了一个文件描述符标志`FD_CLOEXEC`
+`F_SETFD`:  对于`filedes`设置文件描述符标志，新标志值按第三个参数(取整型值)设置。
+`F_GETFL`:  对应于filedes的文件状态标志作为函数值返回。
+`F_GETOWN`:  取当前接收`SIGIO`和`SIGURG`信号的进程ID和进程组ID.
+`F_SETOWN`:  设置接收`SIGIO`和`SIGURG`信号的进程ID和进程组ID。正的`arg`指定一个进程ID，负的`arg`表示等于`arg`绝对值的一个进程组ID
+`fcntl`的返回值与命令有关。如果出错，所有命令都返回-1，如果成功则返回某个其他值。下列有四个命令有特定返回值：`F_DUPFD`、`F_GETFD`、`F_GETEL`以及`F_GETOWN`。第一个返回新的文件描述符，接下来的两个返回相应标志位，最后一个返回一个正的进程ID或负的进程组ID。
+程序中的第一个参数指定文件描述符，并对于该描述符打印其所选择的文件标志说明。
+```c
+#include <stdio.h>
+#include <fcntl.h>
+#include <stdlib.h>
+
+int main(int argc, char *argv[])
+{
+    int val;
+    if(argc != 2)
+    {
+        printf("usage: a.out <descriptor>");
+        return -1;
+    }
+    if((val = fcntl(atoi(argv[1]), F_GETFL, 0)) < 0)
+    {
+        printf("fcntl error for fd %d", atoi(argv[1]));
+        return -1;
+    }
+
+    switch(val & O_ACCMODE)
+    {
+        case O_RDONLY:
+            printf("read only");
+            break;
+        case O_WRONLY:
+            printf("write only");
+            break;
+        case O_RDWR:
+            printf("read write");
+            break;
+        default:
+            printf("unknown access mode\n");
+            return -1;
+    }
+    if(val & O_APPEND)
+    {
+        printf(", append");
+    }
+    if(val & O_NONBLOCK)
+    {
+        printf(", nonblockiing");
+    }
+#if defined(O_SYNC)
+    if(val & O_SYNC)
+        printf(", synchronous writes");
+#endif
+#if !defined(_POSIX_C_SOURCE) && defined(O_FSYNC)
+    if(val & O_FSYNC)
+        printf(", synchronous writes");
+#endif
+    putchar('\n');
+    exit(0);
+}
+
+λ ~/dailytest/apue/ ./printfile 0 < /dev/tty
+read only
+λ ~/dailytest/apue/ ./printfile 1 > temp.foo 
+λ ~/dailytest/apue/ cat temp.foo 
+write only
+λ ~/dailytest/apue/ ./printfile 2 2>>temp.foo 
+write only, append
+λ ~/dailytest/apue/ ./printfile 5 5<>temp.foo 
+read write
+```
+子句`5<>temp.foo`表示在文件描述符5上打开文件`temp.foo`以供读和写
+
+## `ioctl`函数
+`ioctl`函数是I/O操作的杂货箱。不能用本章中其他函数表示的I/O操作通常都能用`ioctl`表示。终端I/O是`ioctl`的最大使用方面。
+```c
+#include <unistd.h>    /*System V*/
+#include <sys/ioctl.h>   /*BSD an Linux*/
+#nclude <stropts.h>     /*XSI STREAMS*/
+int ioctl(int filedes, int request, ...);
+            /*Returns: -1 on error, something else if OK*/
+```
+在此原型中，我们表示的只是`ioctl`函数本身所要求的头文件。通常，还要求另外的设备专用头文件。例如，除POSIX.1所说明的基本操作之外，终端I/O的`ioctl`命令都需要头文件`<termios.h>`
+每个设备驱动程序都可以定义它自己专用的一组`ioctl`命令。系统则为不同种类的设备提供通用的`ioctl`命令。
+
+## `/dev/fd`
+较新的系统都提供名为`/dev/fd`目录，其目录项`entries`是名为0, 1, 2等的文件。打开文件`/dev/fd/n`等效于复制描述符n(假定描述符n是打开的)。
+在下列函数调用中：
+`fd = open(“/dev/fd/0”, mode);`
+
+大多数系统忽略它所指定的`mode`，而另外一些则要求`mode`必须是所涉及的文件(在这里是标准输入)原先打开时所用`mode`的子集。因为上面的打开等效于：
+`fd = dup(0);`
+
+
 
 
