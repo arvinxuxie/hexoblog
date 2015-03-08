@@ -1,12 +1,13 @@
 ---
 layout: post
 title: Errors and Exceptions
+date: 2014-09-25
 category: python
 tags: [core_python]
 ---
 ## 检测和处理异常
-<!--more-->
 `try`语句主要有两种形式:`try-except`和`try-finally`。一个try语句可以对应多个except子句。或复合语句`try-except-finally`。你可以添加一个可选的`else`子句处理没有探测到异常的执行的代码。
+<!--more-->
 ### try-except语句
 try-except语句定义了进行异常监控的一段代码，并且提供了处理异常的机制。
 ```

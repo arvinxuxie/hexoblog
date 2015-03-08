@@ -1,8 +1,10 @@
 ---
 layout: post
 title: apue_file_I/O
+date: 2014-10-23
 category: c/c++
 tags: [apue, c]
+toc: ture
 ---
 <!--more-->
 ## 文件描述符`File Descriptors`

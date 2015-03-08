@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 窸窣忆影序
+date: 2014-09-08
 category: life
 tags: 窸窣忆影
 ---

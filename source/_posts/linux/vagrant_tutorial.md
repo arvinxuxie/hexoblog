@@ -1,5 +1,7 @@
 ---
-layout: vagrant_tutorial
+layout: post
+title: vagrant_tutorial
+date: 2014-11-01
 category: linux
 tags: [linux]
 ---

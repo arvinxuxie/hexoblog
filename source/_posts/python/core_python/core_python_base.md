@@ -1,16 +1,14 @@
 ---
 layout: post
 title: core_python_base
+date: 2014-08-25
 category: python
 tags: [core_python]
-mathjax: true
 ---
-# python基础
 ## 起步
-<!--more-->
 ### Python 解释器
 `CPython`: 由C语言开发，并广泛使用，运行`python`命令启动
-`IPython`: 是基于CPython之上的一个交互式解释器。
+`IPython`: 是基于CPython之上的一个交互式解释器。<!--more-->
 `PyPy`: 是另一个Python解释器，它的目标是执行速度，采用`JIT`技术，对Python进行动态编译，但和[Cpython运行结果有所不同](http://pypy.readthedocs.org/en/latest/cpython_differences.html)。
 `Jypthon`: 是运行在Java平台上的python解释器，可以直接把Python代码编译成Java字节码执行。
 `IronPython`: 是运行在`.Net`平台上的Python解释器，可以直接把Python代码编译成.Net的字节码。

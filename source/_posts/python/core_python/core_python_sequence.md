@@ -1,13 +1,10 @@
 ---
 layout: post
 title: core_python_sequence
+date: 2014-09-10
 category: python
 tags: [core_python]
-mathjax: true
 ---
-
-#Python
-<!--more-->
 ## 序列：字符串，列表，元组
 切片操作(Slice[], [:], [::])
 ```python
@@ -17,6 +14,7 @@ mathjax: true
 >>> s[::2]
 ‘aceg’
 ```
+<!--more-->
 切片返回尾部递减字符串
 ```python
 s = ‘abcde’

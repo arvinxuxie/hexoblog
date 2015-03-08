@@ -1,8 +1,9 @@
 ---
 layout: post
 title: apue_process
+date: 2014-10-27
 category: c/c++
-tags: [c/c++]
+tags: [apue, c]
 mathjax: true
 ---
 

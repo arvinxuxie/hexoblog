@@ -1,7 +1,12 @@
 ---
+layout: post
+title: git tutorial
+date: 2014-09-18
+category: git
+tags: [git]
+---
 本文参照[git 是什么](http://blog.csdn.net/jackystudio/article/details/12249303)和[Git - Tutorial](http://www.vogella.com/tutorials/Git/article.html), [Git Manual Page](https://www.kernel.org/pub/software/scm/git/docs/)
-[git-scm](http://git-scm.com/)
-# Git
+[git-scm](http://git-scm.com/)<!--more-->
 ## 本地版本仓库和操作(local repository and operations)
 当克隆或是新建一个仓库后用户就有一个完整的仓库拷贝。
 ## 远程仓库
@@ -9,7 +14,7 @@ Git允许用户本地仓库和远程仓库的同步(synchronize)。用户可以�
 ## 分支和合并(Branching and merging)
 ## 工作树 (Working tree)
 
-![直接上张工作图吧]({{BASE_PATH}}/image/git-tutorial/img1.jpg)
+![工作图]({{BASE_PATH}}/image/git-tutorial/img1.jpg)
 ##术语(Terminology)
 1. **分支(Branches)**
 一个分支

@@ -1,12 +1,12 @@
 ---
 layout: post
 title: functions and functional programming
+date: 2014-09-20
 category: python
 tags: [core_python]
 ---
 ## 函数
-<!--more-->
-函数会向调用者返回一个值，而实际编程中函数更接近过程，不显示的返回任何东西。把过程看待成函数的语言通常对于“什么都不返回”的函数设定了特殊的类型或者值的名字。python中，对应的返回对象类型是none
+函数会向调用者返回一个值，而实际编程中函数更接近过程，不显示的返回任何东西。把过程看待成函数的语言通常对于“什么都不返回”的函数设定了特殊的类型或者值的名字。<!--more-->python中，对应的返回对象类型是none
 ```
 In [23]: def hello():
    ....:     print 'hello world'

@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 远去的北京序
+date: 2014-09-29
 category: life
 tags: 远去的北京
 ---

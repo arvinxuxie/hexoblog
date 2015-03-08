@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 读《胡同文化》有感
+date: 2014-09-12
 category: life
 tags: 窸窣忆影
 ---

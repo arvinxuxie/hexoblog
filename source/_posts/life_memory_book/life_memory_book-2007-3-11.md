@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 手表的愿望
+date: 2014-09-14
 category: life
 tags: 窸窣忆影
 ---

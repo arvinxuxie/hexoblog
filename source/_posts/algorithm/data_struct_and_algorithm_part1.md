@@ -1,14 +1,16 @@
 ---
 layout: post
 title: Data Struct and Algorithm Analysis Part I
-category: Algorithm
+date: 2014-11-02
+category: algorithm
 tags: [algorithm, c++]
+toc: true
 ---
 ## 引论
 ### C++ 细节
 **参数传值**:
 1. 按值调用适用于不被函数更改的小对象
-2. 按常量引用调用适用于不被函数更改的大对象
+2. 按常量引用调用适用于不被函数更改的大对象<!--more-->
 3. 引用调用适用于所有可以被函数更改的对象
 **三大函数：析构函数、复制构造函数和operator=**
 1. `析构函数`: 当一个对象超出其作用域或执行delete时，就调用析构函数。通常析构函数的唯一任务就是释放使用的对象时所占有的所有资源。这其中包括为每一个相应的new调用delete，以及关闭所有打开的文件等。默认操作是对每一个数据成员都使用析构函数。

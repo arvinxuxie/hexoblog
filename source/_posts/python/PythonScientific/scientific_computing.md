@@ -1,15 +1,16 @@
 ---
 layout: post
 title: Scientific Computing
+date: 2014-10-10
 category: python
 tags: python
 ---
 ## 科学Python构件
-<!--more-->
 * **Python**: 
 * **IPython**: 一个高级的[Python shell](http://ipython.scipy.org/moin/)
 * **Numpy**: 提供强大的`numerical arrays`对象，以及操纵它们的例程。[http://www.numpy.org/](http://www.numpy.org/)
 * **Scipy**: 高级的数据处理例程`processing routines`.最优化`Optimization`,回归`regression`,插值`interpolation`,etc[http://www.numpy.org/](http://www.numpy.org/)
+<!--more-->
 * **Matplotlib**: 2-D可视化，`publication-ready` plots[http://www.numpy.org/](http://www.numpy.org/)
 * **Mayavi**: 3-D可视化[http://www.numpy.org/](http://www.numpy.org/)
 ## Python语言
@@ -419,7 +420,124 @@ Out[206]:
 array([[ 12.,  12.,  12.],
        [ 12.,  12.,  12.],
        [ 12.,  12.,  12.]])
+
+# Note: Matrix multiplication:
+In [11]: c.dot(c)
+Out[11]: 
+array([[ 3.,  3.,  3.],
+       [ 3.,  3.,  3.],
+       [ 3.,  3.,  3.]])
 ```
+比较`Comparisions`
+```
+In [12]: a = np.array([1, 2, 3, 4])
+In [13]: b = np.array([4,2,2,4])
+In [14]: a == b
+Out[14]: array([False,  True, False,  True], dtype=bool)
+In [15]: a > b
+Out[15]: array([False, False,  True, False], dtype=bool)
+In [16]: c = np.array([1, 2, 3, 4])
+In [17]: np.array_equal(a, c)
+```
+逻辑运算`Logical operations`
+```
+In [18]: a = np.array([1, 1, 0, 0], dtype=bool)
+In [19]: b = np.array([1, 0, 1, 0], dtype=bool)
+In [20]: np.logical_or(a, b)
+Out[20]: array([ True,  True,  True, False], dtype=bool)
+In [21]: np.logical_and(a, b)
+Out[21]: array([ True, False, False, False], dtype=bool)
+In [22]: a = np.arange(5)
+In [23]: np.sin(a)
+Out[23]: array([ 0.        ,  0.84147098,  0.90929743,  0.14112001, -0.7568025 ])
+```
+转置`Transposition`
+```
+In [42]: a = np.triu(np.ones((3, 3)), 1)
+In [43]: a
+Out[43]: 
+array([[ 0.,  1.,  1.],
+       [ 0.,  0.,  1.],
+       [ 0.,  0.,  0.]])
+In [44]: a.T
+Out[44]: 
+array([[ 0.,  0.,  0.],
+       [ 1.,  0.,  0.],
+       [ 1.,  1.,  0.]])
+```
+**基本运算**`Basic reductions`
+行求和或列求和`Sum by rows and by columns`
+```
+In [52]: x = np.array([[1, 1], [2, 2]])
+In [53]: x
+Out[53]: 
+array([[1, 1],
+       [2, 2]])
+In [54]: x.sum(axis=0)      #cloumns (first dimension)
+Out[54]: array([3, 3])
+In [55]: x[:, 0].sum(), x[:, 1].sum()
+Out[55]: (3, 3)
+In [56]: x.sum(axis=1)       #rews(second dimension)
+Out[56]: array([2, 4])
+In [57]: x[0,:].sum(), x[1, :].sum()
+Out[57]: (2, 4)
+
+# Same idea in higher dimensions
+In [59]: x = np.random.rand(2, 2, 2)
+In [60]: x
+Out[60]: 
+array([[[ 0.35194873,  0.58167584],
+        [ 0.10980984,  0.47754639]],
+
+       [[ 0.29465848,  0.88150663],
+        [ 0.62609881,  0.74956937]]])
+In [61]: x.sum(axis=2)[0, 1]
+Out[61]: 0.58735623217259902
+In [62]: x.sum()
+Out[62]: 4.0728140984986636
+In [63]: x.sum(axis=2)
+Out[63]: 
+array([[ 0.93362458,  0.58735623],
+       [ 1.17616511,  1.37566818]])
+```
+其他的一些法则
+```
+In [69]: x = np.array([1, 3, 2])
+In [70]: x.min()
+Out[70]: 1
+In [71]: x.max()
+Out[71]: 3
+In [72]: x.argmin()  #index of minium
+Out[72]: 0
+In [73]: x.argmax()   #index of maximum
+```
+逻辑运算
+```
+In [74]: np.all([True, True, False])
+Out[74]: False
+In [75]: np.any([True, True, False])
+Out[75]: True
+In [76]: a = np.zeros((100, 100))
+In [77]: np.any(a != 0)
+Out[77]: False
+In [78]: np.all(a == 0)
+Out[78]: True
+```
+统计学
+```
+In [95]: x = np.array([1, 2, 3, 1])
+In [96]: y = np.array([[1, 2, 3], [5, 6, 1]])
+In [97]: x.mean()
+Out[97]: 1.75
+In [98]: np.median(x)
+Out[98]: 1.5
+In [100]: np.median(y, axis=-1)
+Out[100]: array([ 2.,  5.])
+In [101]: x.std()
+Out[101]: 0.82915619758884995
+```
+其中`np.median(x)`为x的[中位数](http://zh.wikipedia.org/zh-hans/%E4%B8%AD%E4%BD%8D%E6%95%B8)，`x.std()`为x的标准差函数`std = sqrt(mean(abs(x - x.mean())**2))`。
+
 
 
 

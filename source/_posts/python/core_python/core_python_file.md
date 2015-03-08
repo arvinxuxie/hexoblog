@@ -1,15 +1,12 @@
 ---
 layout: post
 title: core_python_file
+date: 2014-09-22
 category: python
 tags: [core_python]
-mathjax: true
 ---
-
-# 文件
-<!--more-->
 **文件内建函数**(open()和file())
-文件对象的访问模式
+文件对象的访问模式<!--more-->
 `r`     只读方式打开
 `rU/ Ua`    以读方式打开，同时提供换行符的支持
 `w`     以写方式打开

@@ -1,6 +1,7 @@
 ---
 layout: post
 title: apue files and directories
+date: 2014-10-20
 category: c/c++
 tags: [apue, c]
 ---

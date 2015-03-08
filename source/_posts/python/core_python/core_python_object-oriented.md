@@ -1,12 +1,13 @@
 ---
 layout: post
 title: Object-Oriented Programming
+date: 2014-10-03
 category: python
 tags: [core_python]
 ---
-<!--more-->
 ## Introduction
 类与实例相互联系：类是对象的定义，而实例是“真正的实物”,它存放了类中所定义的对象的具体信息。所有新式类必须继承至少一个父类，参数`bases`可以是一个(单继承`single inheritance`)或多个(多重继承`multiple inheritance`)的父类。
+<!--more-->
 ```
 class MyNewObjectType(bases):
     ‘define MyNewObjectType class’

@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Debugging and Profiling
+date: 2014-10-11
 category: python
 tags: python
 ---

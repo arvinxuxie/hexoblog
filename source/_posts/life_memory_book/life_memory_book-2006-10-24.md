@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 2006 年10 月 24 日  星期二 （晴）
+date: 2014-09-11
 category: life
 tags: 窸窣忆影
 ---

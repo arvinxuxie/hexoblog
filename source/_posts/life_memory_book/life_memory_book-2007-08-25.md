@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 2007年8月25日  星期日  (晴)
+date: 2014-09-20
 category: life
 tags: 窸窣忆影
 ---
